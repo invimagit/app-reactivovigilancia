@@ -1,0 +1,368 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="template/mainTemplate.xhtml">
+    <ui:define name="content"> 
+        <script language="javascript" type="text/javascript">
+            //*** Este Codigo permite Validar que sea un campo Numerico
+            function Solo_Numerico(variable) {
+                Numer = parseInt(variable);
+                if (isNaN(Numer)) {
+                    return "";
+                }
+                return Numer;
+            }
+            function ValNumero(Control) {
+                Control.value = Solo_Numerico(Control.value);
+            }
+            //*** Fin del Codigo para Validar que sea un campo Numerico
+        </script>
+        <p:idleMonitor timeout="1800000">
+            <p:ajax event="idle" listener="#{crearReporteUsuarioManagedBean.cerrarSesion}"/>
+        </p:idleMonitor>
+        <div align="center">
+            <h:form onkeypress="if (event.keyCode === 13) { return false; }"  id="frmactregistroUsuario" >
+                <p:panel id="panelContenedor" style="width: 100%;border: none;">
+
+
+
+                    <!--            <p:outputLabel value="Los campos marcados con * son obligatorios" style="color:red;font-size:0.85em;font-weight:bold;" />-->
+                    <p:panel id="panelInfoUsuario" styleClass="panelBlue" header="A. INFORMACIÓN DEL USUARIO/REPORTANTE" style="width: 100%;border: none;" >
+                        <p:panelGrid  styleClass="cssPanelesAcidos"  style="width:100%;border: none;">
+                            <p:row style="width: 95%;">
+                                <p:column colspan="3">
+                                    <p:outputLabel value="1.Nombre" style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;" />
+                                </p:column>
+                            </p:row>
+                            <p:row style="width: 95%;">
+                                <p:column colspan="3">
+                                    <p:inputText id="nombreRep" value="#{crearReporteUsuarioManagedBean.nombreRep}" style="width :95%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;"
+                                                 required="true" autocomplete="off" requiredMessage="#{msg.requiereNombre}"/>
+                                    <p:message for="nombreRep"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="2. Sexo" style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="3. Edad" style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="4. Edad en?" style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:selectOneRadio id="genero" layout="lineDirection"     value="#{crearReporteUsuarioManagedBean.sexo}" style="width :200px;border:0px;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;"
+                                                      required="true" requiredMessage="#{msg.requiereGenero}">
+                                        <f:selectItem id="item4" itemLabel="Femenino" itemValue="F" />
+                                        <f:selectItem id="item5" itemLabel="Masculino" itemValue="M" />
+                                    </p:selectOneRadio>
+                                    <p:message for="genero"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="edad" maxlength="3"  value="#{crearReporteUsuarioManagedBean.edad}" onkeyup="return ValNumero(this);" style="width :200px;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;"
+                                                 required="true" requiredMessage="#{msg.requiereEdad}" autocomplete="off"/> 
+                                    <p:message for="edad"/>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu id="edadEn"  value="#{crearReporteUsuarioManagedBean.edadEn}" style="width :200px;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;"
+                                                     required="true" requiredMessage="#{msg.requiereEdadEn}">
+                                        <f:selectItem itemValue="" itemLabel="Seleccione.." noSelectionOption="true"/>
+                                        <f:selectItem  itemValue="D"  itemLabel="Dias"/>
+                                        <f:selectItem  itemValue="S"  itemLabel="Semanas"/>
+                                        <f:selectItem  itemValue="M"  itemLabel="Meses"/>
+                                        <f:selectItem  itemValue="A"  itemLabel="Años"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="edadEn"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="2">
+                                    <p:outputLabel value="5.Dirección" style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;" />
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="6. Teléfono" style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;" />
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="2">
+                                    <p:inputText id="direccion" value="#{crearReporteUsuarioManagedBean.direccionRep}" style="width :100%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;"
+                                                 required="true" requiredMessage="#{msg.requiereDirecccion}" autocomplete="off"/>
+                                    <p:message for="direccion"/>
+                                </p:column>>
+                                <p:column>
+                                    <p:inputText id="telefono" value="#{crearReporteUsuarioManagedBean.telefono}"  onkeyup="return ValNumero(this);"  style="width :95%;padding: left;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;" 
+                                                 required="true" requiredMessage="#{msg.requiereTelefono}" autocomplete="off"/>
+                                    <p:message for="telefono"/>
+                                </p:column>>
+
+                            </p:row>
+                            <p:row style="width: 95%">
+                                <p:column>
+                                    <p:outputLabel value="7. País" style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="8. Departamento" style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="9. Ciudad" style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:selectOneMenu id="pais" value="#{crearReporteUsuarioManagedBean.pais}" 
+                                                     valueChangeListener="#{crearReporteUsuarioManagedBean.onChangePais}" 
+                                                     style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;" 
+                                                     required="true" requiredMessage="#{msg.requierePais}" filter="true" filterMatchMode="startsWith">
+                                        <p:ajax event="change" update="departamento,ciudadRep"/>
+                                        <f:selectItem itemValue="" itemLabel="Seleccione..." noSelectionOption="true"/>
+                                        <f:selectItems value="#{crearReporteUsuarioManagedBean.arregloPais}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="pais"/>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu id="departamento" value="#{crearReporteUsuarioManagedBean.codDepart}" 
+                                                     valueChangeListener="#{crearReporteUsuarioManagedBean.onChangeDpto}" 
+                                                     style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;"  disabled="#{!crearReporteUsuarioManagedBean.activoDpto}"
+                                                     required="#{crearReporteUsuarioManagedBean.activoDpto}" requiredMessage="#{msg.requiereDpto}" filter="true"
+                                                     filterMatchMode="startsWith">
+                                        <p:ajax event="change" update="ciudadRep"/>
+                                        <f:selectItem itemValue="" itemLabel="Seleccione..." noSelectionOption="true"/>
+                                        <f:selectItems value="#{crearReporteUsuarioManagedBean.arregloDpto}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="departamento"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:selectOneMenu id="ciudadRep"  value="#{crearReporteUsuarioManagedBean.codMun}" 
+                                                     style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;" 
+                                                     disabled="#{!crearReporteUsuarioManagedBean.activoDpto}" required="#{crearReporteUsuarioManagedBean.activoDpto}"
+                                                     requiredMessage="#{msg.requiereCiudadRep}" filter="true" filterMatchMode="startsWith">
+                                        <f:selectItem itemValue="" itemLabel="Seleccione..." noSelectionOption="true"/>
+                                        <f:selectItems value="#{crearReporteUsuarioManagedBean.arregloMun}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="ciudadRep"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="3">
+                                    <p:outputLabel value="10.Correo electrónico " style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;" />
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="3">
+                                    <p:inputText id="mail" value="#{crearReporteUsuarioManagedBean.email}"    style="width :95%;padding: left;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;" 
+                                                 required="true" requiredMessage="#{msg.requiereEmail}" validatorMessage="El formato del correo no es válido"
+                                                 autocomplete="off">
+                                        <f:validateRegex
+                                            pattern="(^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$)?" />
+                                    </p:inputText>
+                                    <p:message for="mail"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+
+
+
+                    <p:panel id="panelB" styleClass="panelBlue"  style="width: 100%;border: none;" header="B. INFORMACIÓN DEL REACTIVO">
+                        <p:panelGrid styleClass="cssPanelesAcidos"  style="width:100%">
+                            <p:row>
+                                <p:column colspan="2">
+                                    <p:outputLabel value="1. Nombre Genérico del Reactivo" style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;" />
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="2. Nombre Comercial del Reactivo" style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;" />
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="2">
+                                    <p:inputText id="nombreGenerico" maxlength="255"     value="#{crearReporteUsuarioManagedBean.nombreDm}" style="width:95%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;" 
+                                                 autocomplete="off" required="true" requiredMessage="#{msg.requiereNombreDM}"/>
+                                    <p:message for="nombreGenerico"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="nombreComercial" maxlength="255" value="#{crearReporteUsuarioManagedBean.nombreComercial}" style="width:95%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;"                                                  autocomplete="off" required="true" requiredMessage="#{msg.requiereNombreComercial}"/>
+                                    <p:message for="nombreComercial"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="3. Registro sanitario" style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="4. Lote" style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="5. Referencia" style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;" />
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:inputText id="regSan" maxlength="20"     value="#{crearReporteUsuarioManagedBean.regSan}" style="width:300px;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;" 
+                                                 autocomplete="off" required="true" requiredMessage="#{msg.requiereRegSan}"/>
+                                    <p:message for="regSan"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="lote" maxlength="64"     value="#{crearReporteUsuarioManagedBean.lote}" autocomplete="off" 
+                                                 required="true" requiredMessage="#{msg.requiereLote}"/>
+                                    <p:message for="lote"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="referencia" maxlength="128"    value="#{crearReporteUsuarioManagedBean.referencia}" autocomplete="off"
+                                                 required="true" requiredMessage="#{msg.requiereReferencia}"/>
+                                    <p:message for="referencia"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="2">
+                                    <p:outputLabel value="6. Nombre o razón social del fabricante " style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="7. Nombre o razón social del Importador y/o distribuidor" style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="2">
+                                    <p:inputText id="fabricante" maxlength="255"     value="#{crearReporteUsuarioManagedBean.nombreFabricante}" style="width:95%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;" 
+                                                 autocomplete="off" required="true" requiredMessage="#{msg.requiereFabricante}"/>                            
+                                    <p:message for="fabricante"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="importador" maxlength="255"     value="#{crearReporteUsuarioManagedBean.nombreDistribuidor}" style="width:95%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;" 
+                                                 autocomplete="off" required="true" requiredMessage="#{msg.requiereImportador}"/>
+                                    <p:message for="importador"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+
+                    <p:panel id="panelC" styleClass="panelBlue" style="width: 100%;border: none;"  header="C. DESCRIPCIÓN DEL EVENTO O INCIDENTE ADVERSO">
+                        <p:panelGrid styleClass="cssPanelesAcidos"  style="width:100%">
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="1.	Fecha del evento/incidente adverso sospechado (dd/mm/aaaa)" style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;" />
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="2. Fecha de elaboración del reporte (dd/mm/aaaa)" style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:calendar id="fechaEve"      
+                                                value="#{crearReporteUsuarioManagedBean.fechaEvento}"
+                                                styleClass="calendar" required="true" requiredMessage="#{msg.requiereFechaEv}">
+                                        <!--<f:convertDateTime pattern="dd/MM/yyyy" timeZone="#{crearReporteUsuarioManagedBean.zona}"/>-->
+                                    </p:calendar>
+                                    <p:message for="fechaEve"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="fechaElab" value="#{crearReporteUsuarioManagedBean.fechaNoti}" disabled="true"    />
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="3. Detección del evento/incidente adverso " style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;"/>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneRadio id="deteccion" layout="pageDirection"     value="#{crearReporteUsuarioManagedBean.eventoDeteccion}" style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;border:0px"
+                                                      required="true" requiredMessage="#{msg.requiereDeteccion}">
+                                        <f:selectItem id="item8" itemLabel="Antes del uso del DM" itemValue="1" />
+                                        <f:selectItem id="item9" itemLabel="Durante el uso del DM" itemValue="2" />
+                                        <f:selectItem id="item10" itemLabel="Después del uso del DM" itemValue="3" />
+                                    </p:selectOneRadio>
+                                    <p:message for="deteccion"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="2">
+                                    <p:outputLabel value="4. Descripción del evento o incidente adverso" style="font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.85em;"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="2">
+                                    <p:inputTextarea id="descripcion" style="width:98%"    rows ="4" cols="4"  value="#{crearReporteUsuarioManagedBean.descripcionEvento}"
+                                                     required="true" requiredMessage="#{msg.requiereDescripcion}"/> 
+                                    <p:outputLabel value="*" style="color:red;font-size:1.0em;font-weight:bold;" rendered="#{crearReporteUsuarioManagedBean.obligatorio20}"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                    <p:panelGrid columns="1" style="text-align:center; width:100%;" styleClass="cssPanelesAcidos">
+                        <p:outputLabel value="La información contenida en este reporte es información epidemiológica, por lo tanto tiene carácter confidencial 
+                                       y se utilizará únicamente con fines sanitarios." style="border:0px;padding: left;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.7em;"/>
+                        <p:outputLabel value="El Ministerio de la Protección Social y el INVIMA son las únicas instituciones competentes para su divulgación. (Ley 9 de 1979).1 DM: Dispositivo médico" style="border:0px;padding: left;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.7em;"/>
+                    </p:panelGrid>
+                    <center>
+                        <p:panel id="panelBotones" style="border: none;width: 100%;">
+                            <p:panelGrid columns="2" style="text-align:center;border: none;" styleClass="cssPanelesAcidos" >
+                                <p:commandLink value="Guardar" styleClass="vinculoSinDiv" action="#{crearReporteUsuarioManagedBean.confirmarObligatoriedad}" 
+                                               ajax="false"/>
+                                <p:commandLink id="btnCancelar" value="Cancelar" styleClass= "vinculoSinDiv" ajax="false" immediate="true" 
+                                               action="#{crearReporteUsuarioManagedBean.btnCancelar}"/>
+                            </p:panelGrid>
+                        </p:panel>
+                    </center>
+                </p:panel>
+                <p:dialog modal="true" resizable="false"  id="popupCrea" draggable="false" dynamic="true" widgetVar="popupCrea"
+                          visible="#{not empty facesContext.messageList and facesContext.maximumSeverity.ordinal == 0}" header="Atención!" closable="false">
+                    <p:panel style="border: none;alignment-adjust: central" >
+                        <p:panelGrid styleClass="cssPanelesAcidos" style="border: none;width: 100%;">
+                            <p:row>
+                                <p:column colspan="2">
+                                    <div style="font-size: 14px">
+                                        <p:outputLabel value="Esta seguro de que desea enviar la información?"/>
+                                        <p:message for="panelContenedor"/>
+                                    </div>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <div style="font-size: 14px;">
+                                        <p:commandButton value="Aceptar " style="vinculoSinDivBoton"  action="#{crearReporteUsuarioManagedBean.grabar}"  ajax="false"/>
+                                    </div>
+                                </p:column>
+                                <p:column>
+                                    <div style="font-size: 14px;">
+                                        <p:commandButton value="Cancelar " style="vinculoSinDivBoton"  oncomplete="PF('popupCrea').hide()"/>
+                                    </div>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                </p:dialog>
+
+                <p:dialog modal="true" resizable="false" draggable="true" id="popupMensaje" dynamic="true" widgetVar="popupMensaje"
+                          visible="#{not empty facesContext.messageList and facesContext.maximumSeverity.ordinal == 1}" header="Atención!" closable="false">
+                    <p:panel style="border: none;alignment-adjust: central">
+                        <p:panelGrid style="border: none; alignment-adjust: central;width: 100%" styleClass="cssPanelesAcidos">
+                            <p:row>
+                                <p:column>
+                                    <div style="font-size: 14px;">
+                                        <p:outputLabel value="#{crearReporteUsuarioManagedBean.mensajeConfirma}" escape="false"/>
+                                        <p:message for="panelContenedor"/>
+                                    </div>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <center>
+                                        <div style="font-size: 14px;">
+                                            <p:commandButton value="Aceptar " style="vinculoSinDiv"  action="#{crearReporteUsuarioManagedBean.cerrarConfirmacion}"  ajax="false" oncomplete="PF('popupMensaje').hide();"/>
+                                        </div>
+                                    </center>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                </p:dialog>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

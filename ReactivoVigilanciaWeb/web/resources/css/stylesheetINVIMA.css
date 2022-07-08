@@ -1,0 +1,1603 @@
+@charset "utf-8";
+/* CSS Document */
+.bordeTablaPrincipal{
+    border-bottom-width:0.063em; 
+    border-left-width:0.063em;
+    border-top-width:0.063em;
+    border-right-width:0.063em;
+
+    border-top-color:#9c9c9c;
+    border-right-color:#9c9c9c;
+    border-left-color:#9c9c9c;
+    border-bottom-color:#9c9c9c;
+
+    border-top-style:solid;
+    border-right-style:solid;
+    border-left-style:solid;
+    border-bottom-style:solid;
+}
+
+.bordeTablaPrincipalII{
+    border-bottom-width:0.063em; 
+    border-left-width:0.063em;
+    border-top-width:0.063em;
+    border-right-width:0.063em;
+
+    border-top-color:#9c9c9c;
+    border-right-color:#9c9c9c;
+    border-left-color:#9c9c9c;
+    border-bottom-color:#9c9c9c;
+
+    border-top-style:solid;
+    border-right-style:solid;
+    border-left-style:solid;
+    border-bottom-style:solid;
+
+    background-color: #f8fbf2;
+    width: 45%;
+    text-align: center;
+    background-color: #f8fbf2
+}
+
+
+.columnaNormal{
+
+}
+
+/*.imagenOpacada{
+    opacity:0.4;filter:alpha(opacity=40);
+}*/
+
+.iceOutConStatInactv {
+    position: absolute;
+    background-image: none;
+    background-position: top;
+    background-repeat: no-repeat;
+    width: 2.5em; 
+    height: 2.5em;
+}
+
+.toptitle {
+    BORDER-RIGHT: black 0em solid; PADDING-RIGHT: 1em;  BORDER-TOP: black 0em solid; PADDING-LEFT: 1em;  FONT-WEIGHT: bold; FONT-SIZE: 0.688em;  PADDING-BOTTOM: 0.5em;  BORDER-LEFT: black 0em solid; COLOR: #FFFFFF; PADDING-TOP: 0.5em;  BORDER-BOTTOM: #8e8e8c 0.2em solid;  BACKGROUND-COLOR: #00007B; TEXT-ALIGN: center
+}
+
+.topsuptitle { BORDER-RIGHT: black 0em solid; PADDING-RIGHT: 1em;  BORDER-TOP: black 0em solid; PADDING-LEFT: 1em;  FONT-WEIGHT: bold; FONT-SIZE: 0.688em;  PADDING-BOTTOM: 0.5em;  BORDER-LEFT: black 0em solid; COLOR: #000000; PADDING-TOP: 0.5em;  BORDER-BOTTOM: #8e8e8c 0.2em solid; BACKGROUND-COLOR: #9ABAE6; TEXT-ALIGN: center }
+
+
+.columnaHaciaArriba{
+    vertical-align: top;
+}
+
+.iceDatTblHdr{
+    font-size:1em; 
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+.icePnlTbOn .MidMid>a, .icePnlTbOn .MidMid>div {
+    font-size:1em; 
+    font-family:Arial, Helvetica, sans-serif;
+    color: #000000;
+    cursor: pointer;
+    display: block;
+    padding-top: 0.063em; 
+    padding-right: 0.063em;
+    padding-left: 0.063em;
+}
+
+.icePnlTbOver .MidMid>a, .icePnlTbOver .MidMid>div{
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:1em; 
+    color: #000000;
+    cursor: pointer;
+    display: block;
+    padding-top: 0.063em; 
+    padding-right: 0.063em;
+    padding-left: 0.063em;
+}
+
+.icePnlTbOff .MidMid>a, icePnlTbOff .MidMid>div {
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:1em; 
+    color: #000000;
+    cursor: pointer;
+    display: block;
+    padding-top: 0.063em; 
+    padding-right: 0.063em;
+    padding-left: 0.063em;
+}
+
+.oddRowTable{
+    background-color:#dde9c1;
+}
+
+.evenRowTable{
+    background-color: #c5d7af;
+}
+
+.iceInpFileTxt {
+    font-size:1em; 
+    font-family:Arial, Helvetica, sans-serif;
+    background-color: #f9fcf5;
+    border:0.063em solid;
+    border-color: #696 #363 #363 #696;
+}
+
+
+.iceInpFileBtn {
+    font-size:1em; 
+    font-family:Arial, Helvetica, sans-serif;
+    background-color: #f9fcf5;
+    border:0.063em solid;
+    border-color: #696 #363 #363 #696;
+}
+
+.buttonStyleInsideForm{
+    font-size:1.2em;
+    /*    font-size:12px;*/
+    font-family:Arial, Helvetica, sans-serif;
+    background-color: #f9fcf5;
+    border:0.063em solid;
+    border-color: #696 #363 #363 #696;
+    /*    width:auto;
+        height:auto;*/
+    width:7em;
+    height:2em;
+}
+
+.buttonStyle{
+    font-size:1.2em;
+    /*    font-size:12px;*/
+    background-color: #C5d7af;
+    border:0.063em solid;
+    border-color: #696 #363 #363 #696;
+    /*    width:auto;
+        height:auto;*/
+    width:7em;
+    height:2em;
+    text-align: center;
+}
+
+.buttonStyleImg{
+    width:6.250em;
+}
+
+.buttonStyleImg-dis{
+    width:6.250em;
+}
+
+.buttonStyle-dis{
+    font-size:1.2em;
+    background-color: #C5d7af;
+    border:0.063em solid;
+    border-color: #696 #363 #363 #696;
+    width:7em;
+    height:2em;
+    text-align: center;
+    color: white;
+}
+
+.iceSelInpDateInput {
+    font-weight:normal;
+    font-size:1em; 
+    width: 7em; 
+}
+
+.styleAsteriscoObligatorio{
+    color:red;
+    font-size: 1.3em;
+    font-weight:bold;
+}
+
+
+.iceSelInpDateDay a {
+    text-decoration: none;
+    border: 0.063em solid #FFFFFF;
+    color: #000000;
+    width: 100%;
+    height: 100%;
+    padding: 0em;
+    display: block;
+}
+
+.iceSelInpDate {
+    /* calendar outline & background color */
+    border: 0.063em solid #ABABAB; /* removed margin from calendar outline - better absolute positioning of popup */
+
+}
+
+
+.introduccionIndice {
+    font-family:Arial, Helvetica, sans-serif;
+    font-size: 1em;
+    color:black;
+    margin-left:1.5em; 
+    margin-top:1.3em; 
+    text-align:justify;
+}
+
+.texto1Indice {/*valores para div contenedor del texto de menu principal*/
+               width:19em; 
+               height:auto;
+               float:left;
+}
+
+.contenedor {/*medidas y valores del contenedor interior*/
+             width:53.2em; 
+             height:auto;
+             margin: 1em auto;
+             background-color:#d7e9bf;
+             border:#165500 solid 0.063em; 
+}
+
+.contenedor_2 {/*medidas y valores del contenedor interior 2*/
+               width: 38em;
+               height:auto;
+               margin: 1em auto;
+               background-color:#fff;
+               margin-top:3.8em; 
+               border:#165500 solid 0.063em; 
+}
+
+.contenedor_2 {/*medidas y valores del contenedor interior 2*/
+               height:auto;
+               margin: 1em auto;
+               background-color:#fff;
+               margin-top:3.8em; 
+               border:#165500 solid 0.063em; 
+}
+
+.contenedor_3 {/*medidas y valores del contenedor interior 3 de salida*/
+               width: 52em; 
+               height:auto;
+               margin: 1em auto;
+               background-color:#fff;
+               margin-top:3.8em; 
+               border:#165500 solid 0.063em;
+}
+
+.divAyuda{
+    position:absolute;
+    display:inline;
+    background-color:#52954e;
+    font-size:0.9em;
+    font-family:Arial, Helvetica, sans-serif;
+    border:#165500 solid 0.063em; 
+    color:white;
+}
+
+.bordeDatoFaltante{
+    border-bottom-color:red;
+    border-top-color:red;
+    border-left-color:red;
+    border-right-color:red;
+}
+
+H1 {
+    font-size:0.9em;
+    font-family:Arial, Helvetica, sans-serif;
+    color:#165500;
+    padding-left:2.5em; 
+    padding-bottom:1em; 
+    padding-top:0.2em; 
+    text-decoration:underline;
+}
+
+.headerDataTableCol{
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight:bold;
+    font-size:0.9em;
+    background-color:#d7e9bf;
+}
+
+.encabezado {/*valores del encabezado superior*/
+             width:53.2em; 
+             height:8.2em; 
+             background-image:url('images/encabezadonuevo.png');
+             /*background-image:url(images/encabezado.jpg);*/
+}
+
+.separador {/*valores para el separador entre diferentes tablas o secciones de la pagina, distanciador general*/
+            width:auto;
+            height:1.3em; 
+            margin-top:0em;
+}
+
+.tab {/*valores para las pestañas informativas de cada tabla*/
+      width:auto;
+      height:1.2em; 
+      /*background-image:url(images/fondo-grad-tabs.jpg);*/
+      font-family:Arial, Helvetica, sans-serif;
+      font-weight:bold;
+      color:#FFF;
+      font-size:0.9em;
+      padding-left:0.7em; 
+      padding-top:0.2em; 
+      border-bottom:#FFF solid 0.063em; 
+}
+
+.icePnlTbOn{
+    width:100%
+}
+
+.icePnlTbOn .MidMid td{
+    color:black;
+    font-weight: bold;
+    text-align: center;
+
+}
+
+.icePnlTbOn .MidMid {
+    text-align: center;
+    border: none;
+}
+
+.icePnlTbOn .RtMid {
+    background-color: transparent;
+    background-image: url( "./css-images/on-right-mid.gif" );
+    background-repeat: repeat-y;
+    text-align: center;
+    padding-top: 0.32em; 
+    border: none;
+}
+
+.icePnlTbOn .LftBtm {
+    background-color: transparent;
+    background-image: url( "./css-images/on-left-bot.gif" );
+    background-repeat: no-repeat;
+    border: none;
+}
+
+.icePnlTbOn .MidBtm {
+    background-color: transparent;
+    background-image: url( "./css-images/on-mid-bot.gif" );
+    background-repeat: repeat-x;
+    border: none;
+}
+
+.icePnlTbOn .RtBtm {
+    background-color: transparent;
+    background-image: url( "./css-images/on-right-bot.gif" );
+    background-repeat: no-repeat;
+    border: none;
+}
+
+.icePnlTbSetCnt { /*newly added class*/
+                  padding-top: 0.2em; 
+                  padding-left: 0.2em;
+                  padding-right: 0.2em;
+                  padding-bottom: 0.2em;
+                  border-right: 0.3em; 
+                  border-bottom: 0.3em;
+                  border-left: 0.3em;
+                  border-left: 0.3em;
+                  background-color:#ecf3e1;
+}
+
+.icePnlTbSet { /* was iceTabSet*/
+               width: 31.3em;
+}
+
+.tabla_1 {/*medidas y valores del las tablas internas tipo 1*/
+          width:48.2em; 
+          height:auto;
+          margin: 1em auto;
+          background-color:#eff6e5;
+          border:#666 solid 0.036em; 
+}
+
+.tabla_1b {/*medidas y valores del las tablas internas tipo 1b*/
+           width:23em; 
+           height:auto;
+           margin: 1em auto;
+           margin-top:1.9em; 
+           background-color:#eff6e5;
+           border:#666 solid 0.063em; 
+}
+
+.tabla_aux {/*medidas y valores del las tablas internas tipo 1b*/
+            margin:0;
+            border:0;
+            background-color:#9BCD9B;
+}
+
+
+.tabla_1c {/*medidas y valores del las tablas internas tipo 1c de salida*/
+           width:33.8em; 
+           height:auto;
+           margin: 1em auto;
+           margin-top:1.9em; 
+           background-color:#eff6e5;
+           border:#666 solid 0.063em; 
+}
+
+.tabla_2 {/*medidas y valores del las tablas internas tipo 2 internas en la tabla 1*/
+          width:46.7em; 
+          height:auto;
+          margin: 1em auto;
+          color:#000;
+}
+
+
+
+.icePanelPopupHeader {
+    background-color: #7faa51;
+    color: #333333;
+    text-align: center;
+    font-size:0.8em; 
+}
+
+.tabla_2b {/*medidas y valores del las tablas internas tipo 2 internas en la tabla 1*/
+
+}
+
+.fondoEncabezado{
+    background-image:url('../images/encabezadonuevo.png');
+}
+
+
+.formatoTexto{
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight:normal;
+    font-size:1.1em; 
+    text-align: left;
+
+}
+
+.formatoTexto2{
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight:normal;
+    font-size:1.1em; 
+}
+
+.formatoTextoSession{
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight:normal;
+    font-size:1.1em; 
+}
+
+.tabla_2c {/*medidas y valores del las tablas internas tipo 2b internas en la tabla de salida*/
+           width:34em;
+           height:auto;
+           margin: 1em auto;
+           font-family:Arial, Helvetica, sans-serif;
+           color:#000;
+           font-weight:bold;
+           font-size:1.1em; 
+}
+
+.cajaTexto_1{
+    font-weight:normal;
+    font-size:1.1em; 
+    width:14em; 
+}
+
+.cajaTexto_1_ice{
+    font-weight:normal;
+    font-size:1.1em; 
+    width:16em; 
+}
+
+.cajaTexto_1_DatoFaltante{
+    font-weight:normal;
+    font-size:1.1em; 
+    width:14em; 
+    border-color:red;
+}
+
+.cajaTexto_1Txt{
+    font-weight:normal;
+    font-size:1.1em; 
+    width:14em; 
+}
+
+
+.cajaTexto_1_DatoFaltanteTxt{
+    font-weight:normal;
+    font-size:1.1em; 
+    width:14em; 
+}
+
+.cajaTexto_1_larga{
+    font-weight:normal;
+    font-size:1.1em; 
+    width:14em; 
+    height:3em; 
+}
+
+
+.headerClass{
+}
+
+.cajaTexto_1_larga_DatoFaltante{
+    font-weight:normal;
+    font-size:1.3em; 
+    width:14em; 
+    height:3em; 
+    border-bottom-color:red;
+    border-top-color:red;
+    border-left-color:red;
+    border-right-color:red;
+}
+
+.cajaTexto_2_grande{
+    font-weight:normal;
+    font-size:1.1em;
+    width:22em; 
+    height:5em; 
+}
+
+.cajaTexto_2_grande_DatoFaltante{
+    font-weight:normal;
+    font-size:1.1em; 
+    width:22em; 
+    height:5em; 
+    border-bottom-color:red;
+    border-top-color:red;
+    border-left-color:red;
+    border-right-color:red;
+}
+
+.checkBox_style{
+    border-bottom-color:black;
+    border-top-color:black;
+    border-left-color:black;
+    border-right-color:black;
+}
+
+.checkBox_style_DatoFaltante{
+    border-bottom-color:red;
+    border-top-color:red;
+    border-left-color:red;
+    border-right-color:red;
+}
+
+.comboTexto_1{
+    font-weight:normal;
+    font-size:1.1em;
+    font-family:Arial, Helvetica, sans-serif;
+    width:15em; 
+    border-bottom-width:0.063em; 
+    border-left-width:0.063em;
+    border-top-width:0.063em;
+    border-right-width:0.063em;
+}
+
+.asterisco{
+    color:red;font-size:1.2em;  font-weight:bold;
+}
+
+.comboTexto_1_DatoFaltante{
+    font-weight:normal;
+    font-size:1.1em;
+    width:14em; 
+    border-bottom-width:0.2em; 
+    border-left-width:0.063em; 
+    border-top-width:0.063em;
+    border-right-width:0.063em;
+    border-bottom-color:red;
+    border-top-color:red;
+    border-left-color:red;
+    border-right-color:red;
+}
+
+.comboTexto_1_pequenio{
+    font-weight:normal;
+    font-size:1.1em;
+    width:8.2em; 
+    border-bottom-width:0.063em; 
+    border-left-width:0.063em;
+    border-top-width:0.063em;
+    border-right-width:0.063em;
+}
+
+.comboTexto_1_pequenio_DatoFaltante{
+    font-weight:normal;
+    font-size:1.1em; 
+    width:8.2em; 
+    border-bottom-width:0.063em; 
+    border-left-width:0.063em;
+    border-top-width:0.063em;
+    border-right-width:0.063em;
+    border-bottom-color:red;
+    border-top-color:red;
+    border-left-color:red;
+    border-right-color:red;
+}
+
+.marcoTabla{
+    border-bottom-width:0.063em;
+    border-bottom-color:#9c9c9c;
+    border-bottom-style:solid;
+
+    border-left-width:0.063em;
+    border-left-color:#9c9c9c;
+    border-left-style:solid;
+
+    border-right-width:0.063em;
+    border-right-color:#9c9c9c;
+    border-right-style:solid;
+
+    border-top-width:0.063em;
+    border-top-color:#9c9c9c;
+    border-top-style:solid;
+}
+
+.dataTableColumnClass{
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight:bold;
+    font-size:1.1em; 
+}
+
+.dataTableColumnClassTitular2{
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight:bold;
+    font-size:1.1em;
+    width: 19%;
+}
+
+.dataTableColumnClassTitular1{
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight:bold;
+    font-size:1.1em;
+    width: 10%;
+}
+
+.contenedor_UT{
+
+    height:30%;
+    width: 100%;
+    background-color:#ecf3e1;
+    border:0.2em; 
+
+    border-bottom-width:0.063em;
+    border-bottom-color:#9c9c9c;
+    border-bottom-style:solid;
+
+    border-left-width:0.063em;
+    border-left-color:#9c9c9c;
+    border-left-style:solid;
+
+    border-right-width:0.063em;
+    border-right-color:#9c9c9c;
+    border-right-style:solid;
+
+    border-top-width:0.063em;
+    border-top-color:#9c9c9c;
+    border-top-style:solid;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.asterisco {/*valores del asterisco*/
+            font-family:Arial, Helvetica, sans-serif;
+            font-size:1.1em; 
+            font-weight:bold;
+            color:#c50806;
+            padding-left:0.2em; 
+}
+
+.asterisco_text {/*valores del texto de obligatoriedad del asterisco*/
+                 font-family:Arial, Helvetica, sans-serif;
+                 font-size:1.3em; 
+                 color:#c50806;
+                 padding-right:2.5em; 
+                 text-align:right;
+}
+
+.asterisco_text_ingreso {/*valores del texto de obligatoriedad del asterisco en la pagina de ingreso*/
+                         font-family:Arial, Helvetica, sans-serif;
+                         font-size:1.3em; 
+                         color:#c50806;
+                         padding-right:0.9em; 
+                         text-align:right;
+}
+
+.errorFatalStyle{/*valores del texto de obligatoriedad del asterisco en la pagina de ingreso*/
+                 font-family:Arial, Helvetica, sans-serif;
+                 font-size:1.1em; 
+                 color:#c50806;
+                 padding-right:0.9em; 
+                 text-align:right;
+}
+
+.tabla_3 {/*medidas y valores del las tablas medianas internas tipo 3*/
+          width:22.9em; 
+          height:auto;
+          margin-left:2.5em;
+          background-color:#eff6e5;
+          border:#666 solid 0.063em; 
+          float:left;
+          margin-top:0.94em; 
+}
+
+.tabla_4 {/*medidas y valores del las tablas medianas internas tipo 4*/
+          width:22.9em; 
+          height:auto;
+          margin-right:2.5em; 
+          background-color:#eff6e5;
+          border:#666 solid 0.063em; 
+          float:right;
+          margin-top:0.94em; 
+}
+
+.tabla_5 {/*medidas y valores del las tablas internas en la tabla 3 y 4*/
+          width:21.6em; 
+          height:auto;
+          margin: 1em auto;
+          font-family:Arial, Helvetica, sans-serif;
+          color:#000;
+          font-weight:bold;
+          font-size:1.1em; 
+}
+.tabla_6 {/*medidas y valores del las tablas internas en la tabla 3 y 4*/
+          margin: 1em auto;
+          font-family:Arial, Helvetica, sans-serif;
+          color:#000;
+          font-weight:bold;
+          font-size:1.1em;
+}
+
+div.clear {/*div utilizado para forzar los divs con propiedad float hacia abajo*/
+           clear: both;
+}
+
+.botones_contenedor {/*medidas y valores del contenedor de los botones inferiores, general*/
+                     width:auto;
+                     height:auto;
+                     float:right;
+                     margin-right:2.5em; 
+}
+
+.botones {/*medidas y valores del contenedor de la imagen del boton, unitario*/
+          width:auto;
+          height:auto;
+          float:right;
+          margin-right:0.2em; 
+}
+
+.botones_2 {/*medidas y valores del contenedor de la imagen del boton, unitario*/
+            width:auto;
+            height:auto;
+            float:right;
+            margin-right:3.40em; 
+}
+
+.texto_respuesta {
+    font-family:Arial, Helvetica, sans-serif;
+    color: #666;
+    text-align:left;
+    font-weight:normal;
+}
+
+.check {/*medidas y valores del contenedor de la imagen del icono de invima ubicado en la parte inferior*/
+        width:1.7em; 
+        height:2.6em; 
+        background-image:url(images/check.jpg);
+        float:right;
+        margin-top:0em;
+}
+.cabeceraPaneles{
+    width:100%;
+    font-size: 1.1em; 
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+.icePnlPopHdr, .icePnlTlTipHdr {
+    background-color:#7faa51;
+    background-position: top;
+    background-image: url( "" );
+    text-align:center;
+    background-repeat: repeat-x;
+    font-size:0.7em; 
+}
+
+.icePnlPop .icePnlPopBody   {
+    padding: 0.4em; 
+    background-color:#ecf3e1;
+}
+
+.iceSelInpTxtTxt {
+    font-weight:normal;
+    font-size:1.1em; 
+    width:15.7em; 
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+.iceSelInpTxtList {
+    position: absolute;
+    display: block;
+    border-top: 0.063em solid #ABABAB; 
+    border-right: 0.063em solid #666666;
+    border-left: 0.063em solid #ABABAB;
+    border-bottom: 0.063em solid #333333;
+}
+
+.iceSelInpTxtRow {
+    display: block;
+    color: #333333;
+    padding: 0.2em; 
+    padding-left: 1.1em; 
+    border-bottom: 0.2em solid #FFFFFF;
+    position: relative;
+}
+
+.iceSelInpTxtSelRow {
+    display: block;
+    color: #FFFFFF;
+    padding: 0.2em; 
+    padding-left: 1.1em; 
+    border-bottom: 0.063em solid #FFFFFF; 
+    position: relative;
+}
+
+.iceSelInpTxtSelRow span{
+    color: #FFFFFF;
+}
+
+
+.menuResaltado{
+    font-weight: bold;
+}
+
+.textoOscuroRayaArriba{
+    text-decoration:overline;
+    text-align:right;
+}
+
+.textoDerecha{
+    text-decoration:none;
+    text-align:right;
+}
+
+.textoVerdeSubrayado{
+    text-decoration:underline;
+    text-align:right;
+}
+
+.columnaIzquierda{
+    text-align:left;
+}
+
+.columnaDerecha{
+    text-align:right;
+}
+
+.iceOutProgFill {
+    background-color: #7faa51;
+    background-position: top left;
+    background-repeat: repeat-x;
+    display: block;
+}
+
+/**MENU PRINCIPAL**/
+.iceMnuBarItem a { /* was iceMenu */
+                   background-color: #dde9c1;
+                   height: 12.5em;
+                   padding-left: 0.94em;
+                   padding-right: 0.7em;
+                   padding-top: 0.2em;
+                   padding-bottom: 0.2em;
+                   color: #333333; /* Must be >1.01em to avoid layout artifacts on Macs */
+                   font-size: 0.7em;
+                   margin: 0em;
+                   border-right: 0.063em solid #FFFFFF;
+                   width: auto;
+                   float: left;
+                   display: block;
+                   text-decoration: none;
+}
+
+.iceMnuBarItem a:hover { /* was iceMenu */
+                         background-color: #c5d7af;
+                         color: #333333;
+                         border-right: 0.063em solid #FFFFFF;
+}
+
+.iceMnuBarVrtItem { /* was iceMenu_verticalItem 196<->181*/
+                    width: 9.1em;
+}
+
+
+/*VERTICAL*/
+.iceMnuBarVrtItem a { /* was iceMenu_verticalItem */
+                      background-color: #dde9c1;
+                      height: auto;
+                      padding-left: 0.2em;
+                      padding-right: 0em;
+                      padding-top: 0.2em;
+                      padding-bottom: 0.2em;
+                      color: #333333; /* Must be >1.01em to avoid layout artifacts on Macs */
+                      font-size: 1.1em;
+                      margin-bottom: 0.063em;
+                      border-bottom: 0.063em solid #7faa51;
+                      float: none;
+                      display: block;
+                      text-decoration: none;
+}
+
+.iceMnuBarVrtItem a:hover { /* was iceMenu_verticalItem */
+                            background-color: #c5d7af;
+                            color: #333333;
+                            border-right: 0.063em solid #FFFFFF;
+}
+/*FIN VERTICAL*/
+/*FIN MENU PRINCIPAL*/
+
+.iceMnuBarSubMenu { /* was iceSubMenu */
+                    position: relative;
+                    background-color: #dde9c1;
+                    width: 100%;
+                    border-top: 0.063em solid #999999;
+                    border-left: 0.063em solid #999999;
+                    border-bottom: 0.063em solid #999999;
+                    border-right: 0.063em solid #999999;
+                    padding: 0.063em;
+                    height: auto;
+                    display: block;
+                    z-index: 1000;
+}
+/*VERTICAL*/
+.iceMnuBarVrtSubMenu { /* was iceSubMenu_vertical*/
+                       position: absolute;
+                       background-color: #dde9c1;
+                       width: 10.7em;
+                       border-top: 0.063em solid #999999;
+                       border-left: 0.063em solid #999999;
+                       border-bottom: 0.063em solid #999999;
+                       border-right: 0.063em solid #999999;
+                       padding: 0.063em;
+                       height: auto;
+                       display: block;
+                       z-index: 1000;
+}
+/*VERTICAL*/
+
+.iceMnuItm a:hover { /* was iceSubMenuRow*/
+                     background-color: #c5d7af;
+                     color: #333333;
+}
+
+.iceMnuItm a:hover .iceOutTxt, .iceMnuItm a:hover .iceMnuItmLabel{
+    color: #333333;
+}
+
+.iceMnuItm { /* was iceSubMenuRow*/
+             padding: 0em;
+             display: block;
+             height: auto;
+             text-align:left;
+}
+
+.iceMnuItmVrt a:hover { /* was iceMenu_vertical_subItem */
+                        background-color: #dde9c1;
+                        color: #333333;
+                        text-decoration: none;
+                        padding: 0em;
+                        display: block;
+                        height: auto;
+                        text-align:left;
+}
+
+.iceMnuBarSubMenuInd { /* was iceSubMenuRowSubMenuIndicator */
+                       display:inline;
+                       float:right;
+                       padding-top: 0.063em;
+                       padding-right: 0.063em;
+}
+
+.iceMnuBarItemLabel{
+    font-size:1.1em; 
+}
+.iceMnuItmLabel{
+    font-size:1.1em; 
+}
+
+.iceMnuItm a { /* was iceSubMenuRow*/
+               color: #333333;
+               display: block;
+               text-decoration: none;
+               padding-left: 0.2em;
+               padding-right: 0.25em;
+               padding-top: 0.25em;
+               padding-bottom: 0.25em;
+}
+
+/*
+----------- Panel Collapsible --------
+*/
+
+/* opened accordion styles */
+.icePnlClpsbl, .icePnlClpsblHdr, .icePnlClpsblCnt {
+}
+
+/* Closed */
+.icePnlClpsblColpsd, .icePnlClpsblColpsdHdr, .icePnlClpsblColpsdCnt {
+}
+
+/* Open and disabled */
+.icePnlClpsbl-dis, .icePnlClpsblHdr-dis, .icePnlClpsblCnt-dis {
+}
+
+/* Closed and disabled */
+.icePnlClpsblColpsd-dis, .icePnlClpsblColpsdHdr-dis, .icePnlClpsblColpsdCnt-dis{
+}
+
+/* common accordion headers */
+.icePnlClpsblHdr, .icePnlClpsblColpsdHdr {
+    background-color: #7faa51;;
+    font-size: 0.9em;
+    font-weight:bold;
+    font-weight: bold;
+    text-align: left;
+    color:white;
+    cursor: pointer;
+}
+
+.icePnlClpsblHdr .iceOutTxt, .icePnlClpsblColpsdHdr .iceOutTxt {
+    color:white;
+}
+
+.icePnlClpsblCnt, .icePnlClpsblColpsdCnt,
+.icePnlClpsblColpsdCnt-dis, .icePnlClpsblCnt-dis {
+    background-color: #EFEFEF;
+    border: 0.063em solid #CCCCCC; 
+    border-top: none;
+    padding-left: 0.4em; 
+    padding-right: 0.4em;
+    color: #000;
+}
+
+.icePnlClpsblHdr-dis, .icePnlClpsblColpsdHdr-dis {
+    background-color: #7faa51;;
+    font-size: 0.9em; 
+    font-weight:bold;
+    font-weight: bold;
+    text-align: left;
+    color:white;
+    cursor: pointer;
+}
+
+.icePnlClpsblHdr-dis .iceOutTxt, .icePnlClpsblColpsdHdr-dis .iceOutTxt {
+    color: #999;
+}
+
+.icePnlClpsblColpsdCnt-dis, .icePnlClpsblCnt-dis,
+.icePnlClpsblColpsdCnt-dis .iceOutTxt, .icePnlClpsblCnt-dis .iceOutTxt {
+    color: #999;
+}
+
+.icePnlClpsblHdr img, .icePnlClpsblColpsdHdr img {
+    border: 0;
+}
+
+.panelCentrado {
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.panelDerecho {
+    margin-left:auto;
+    margin-right:0;
+}
+
+.panelIzquierdo {
+    margin-left:0;
+    margin-right:auto;
+}
+
+.widthSesionIniciada{
+    width: 0em;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.widthSesionIniciadaII{
+    width: 48.125em; 
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.centrado{
+    text-align: center;
+    /*   margin-left:20%;
+       margin-right:20%;*/
+}
+
+.ColumnaAngosta{
+    width: 30%;
+
+}
+
+.ColumnaAncha{
+    width: 70%;
+
+}
+
+.derecha{
+    align: right;
+
+}
+
+.buttonStyleCancelar{
+    font-size:1em;
+    /*    font-size:12px;*/
+    background-color: #C5d7af;
+    border:0.063em solid;
+    border-color: #696 #363 #363 #696;
+    /*    width:auto;
+        height:auto;*/
+    width:7em;
+    height:2em;
+    text-align: center;
+}
+
+.iceDatPgrScrBtn .iceCmdLnk-dis {
+    color: inherit;
+    visibility: hidden;
+}
+
+.inputRequire{
+color:red;
+font-size:1.0em;
+font-weight:bold;
+}
+
+.optionSelect{
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:0.70em;
+	color: #888;
+	background-color:#ffffff;
+	width:13em;
+}
+
+.cssPanelesAcidos .ui-widget-content{
+    border: 0.063em solid #9C9C9C;
+    background-color: #ECF3E1;
+    border-collapse: collapse;
+    border-color: #ffffff;
+    border-style: none !important;
+    width: 100%;
+}
+
+.cssPanelesAcidos .ui-widget-content td{
+    vertical-align: top !important;
+    border-style: none !important;
+}
+
+.vinculoSinDiv {
+    display:block;
+    float: right;
+    width:auto;
+    margin-bottom: 4px;
+    text-decoration:none;
+    text-align:center;
+    width:120px;
+    height:18px;
+    background-color:#eee;
+    color:#333;
+    padding:5px 0 5px;
+    font-family:Verdana, Geneva, sans-serif;
+    font-size:15px;
+    border-radius:5px;
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+    border:1px solid #999;
+    background-position:-2px -3px;
+    background-repeat:no-repeat;
+    box-shadow:0 3px 5px #333;
+    -moz-box-shadow:0 3px 5px #333;
+    -webkit-box-shadow:0 3px 5px #333;
+}
+.vinculoSinDiv:hover{
+    background-repeat:no-repeat;
+    background-position:-3px -4px;
+    background-color:#7FAA51; 
+    color:#FFF;
+    border-color:#7FAA51; 
+}
+
+.vinculoSinDivLogin {
+    display:block;
+    margin:10px 0;
+    width:auto;
+    margin-left:7px;
+    text-decoration:none;
+    text-align:center;
+    width:120px;
+    height:18px;
+    background-color:#eee;
+    color:#333;
+    padding:5px 0 5px;
+    font-family:Verdana, Geneva, sans-serif;
+    font-size:15px;
+    border-radius:5px;
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+    border:1px solid #999;
+    background-position:-2px -3px;
+    background-repeat:no-repeat;
+    box-shadow:0 3px 5px #333;
+    -moz-box-shadow:0 3px 5px #333;
+    -webkit-box-shadow:0 3px 5px #333;
+}
+.vinculoSinDivLogin:hover{
+    background-repeat:no-repeat;
+    background-position:-3px -4px;
+    background-color:#7FAA51; 
+    color:#FFF;
+    border-color:#7FAA51; 
+}
+
+.verde_superior {
+	width:920px;
+	height:19px;
+	margin:0 auto;
+	background-color: #ECF3E1;
+	padding:10px 20px;
+	color:#FFF;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size:16px;
+	text-shadow:1px 2px 3px #333;
+}
+
+.header_imagen_container {
+	height:131px;
+	background-image:url('../images/encabezadonuevo.png');
+        background-repeat: no-repeat;
+	background-position:center top;
+}
+
+.contenedor_header {
+	width:770px;
+	margin:auto;
+	height:93px;
+	padding-top:35px;
+	padding-left:190px;
+	background-image:url(../images/logo_invima1.jpg);
+	background-size:100px 100px;
+	background-repeat:no-repeat;
+	background-position:75px 15px;
+}
+
+.footer {
+	width:960px;
+	margin:5px auto;
+	height:80px;
+        background-color: #F8FBF2;
+	background-repeat:no-repeat;
+	background-position:right top;
+}
+.footer p.derechos {
+	display:block;
+	font-family:Verdana, Geneva, sans-serif;
+	font-size:12px;
+	color:#000;
+}
+
+.barra_verde {
+	width:960px;
+	background-color:#F8FBF2;
+	height:7px;
+	margin:auto;
+}
+
+.bottom_shadow {
+	width:960px;
+	height:8px;
+        background-color: #F8FBF2;
+	margin:auto;
+}
+
+.central_body {
+	width:960px;
+	margin:5px auto;
+} 
+.central_body .menu_1 {
+	background-color:#c4c4c4; 
+	height:60px;
+	margin-bottom:10px;
+	padding-left:20px;
+}
+/*Menu 1*/
+
+.menu_1 td{
+        font-family:Verdana, Geneva, sans-serif;
+        font-size: 12px;
+        font-weight: bold;
+        text-decoration: none;
+        text-align: center;
+}
+.menu_1 ul{
+	padding-top:7px;}
+
+.menu_1 a {
+	display:block;
+	text-decoration:none;
+	color:#4f4f4f;
+	float:left;
+	margin-right:5px;
+	padding:5px 9px 4px 4px;
+	font-size:12px;
+	border-right:1px solid #333;
+        
+}
+
+.menu_1 a:hover{
+	color:#4f4f4f;
+	}
+       
+.menu_1 a:link{
+	color:#4f4f4f;
+	}
+       
+.menu_1 a:visited{
+	color:#4f4f4f;
+	}
+
+.menu_1 a:active{
+	color:#4f4f4f;
+	}
+        
+ul li #no_border {
+	border:none;
+}
+.central_body .tabla_container {
+	padding:20px;
+	background-color:#FFF;
+	width:auto;
+	margin-bottom:20px;
+	box-shadow:0 3px 4px #333;
+	-moz-box-shadow:0 3px 4px #333;
+	-webkit-box-shadow:0 3px 4px #333;
+}
+.tabla_container {
+	padding:10px;
+	background-color:#FFF;
+	width:auto;
+	margin-bottom:10px;
+	box-shadow:0 3px 4px #333;
+	-moz-box-shadow:0 3px 4px #333;
+	-webkit-box-shadow:0 3px 4px #333;
+}
+.central_body .menu_2 {
+	height:38px;
+	background-image:url(../images/bg_bk.png);
+	color:#FFF;
+}
+.central_body .menu_2 a {
+	text-decoration:none;
+	color:#FFF;
+	display:block;
+	float:left;
+	width:75px;
+	height:26px;
+	padding-left:36px;
+	padding-top:12px;
+	background-image:url(../images/flecha_back.png);
+	background-repeat:no-repeat;
+	background-position:10px 6px;
+	border-right:1px solid #FFF;
+        font-family:Verdana, Geneva, sans-serif;
+        font-size: 12px;
+        font-weight: bold;
+        text-decoration: none;
+        text-align: center;
+}
+
+.central_body .menu_2 a:hover{
+	color:#F8FBF2;}
+
+.menu_2 .salir {
+	float:right;
+	height:38px;
+ 	padding-right:10px;
+ 	width:260px;
+}
+.menu_2 .salir tr td a {
+	text-decoration:none;
+	color:#FFF;
+	height:25px;
+	font-size:13px;
+	padding:0px 2px 0;
+	background-image:none;
+	border:none;
+	float:right;
+	text-align:center;
+	}
+.menu_2 .salir td #j_idt18:inicio {
+	background-image:url(../images/home.png);
+	background-repeat:no-repeat;
+	background-position:0 10px;
+	border-right:1px solid #FFF;
+        cursor:hand;
+}
+
+.menu_2 .salir td #j_idt18:salir {
+	background-image:url(../images/exit.png);
+	background-repeat:no-repeat;
+	background-position:0 10px;
+	border-right:1px solid #FFF;
+        cursor:hand;
+}
+
+.menu_2_inicio {
+	background-image:url(../images/home.png);
+	background-repeat:no-repeat;
+        border:none;
+        cursor:hand;
+}
+
+.menu_2 td{
+        font-family:Verdana, Geneva, sans-serif;
+        font-size: 12px;
+        font-weight: bold;
+        text-decoration: none;
+        text-align: center;
+}
+
+.tabla_container #crumbs {
+	font-size:12px;
+	color:#333;
+	display:block;
+	width:auto;
+	margin-bottom:10px;
+}
+
+.tabla_container #crumbs a{
+	color:#333;
+	}
+.tabla_container #crumbs a:hover{
+	color:#039;
+	}
+.tabla_container #texto_general {
+	display:block;
+	font-size: 12px;
+	color: #000;
+	margin-bottom:10px;
+        text-align: left;
+}
+table tr td #texto_celda {
+	font-family:Verdana, Geneva, sans-serif;
+	font-size:13px;
+	text-align:left;
+	font-weight:bold;
+	color:#333;
+	display:block;
+	margin:8px 7px;
+}
+
+.header_top {
+	width:100%;
+	padding:5px 0;
+	background-image:url(../images/bd-bg.jpg);
+}
+.header_top_data {
+	width:100%;
+        height:14px;
+	padding:5px 0;
+        font-family: sans-serif;
+        font-size: 9pt;
+        color:#000000;
+}
+/*****************************************************************/
+/*****************************************************************/
+/*****************************************************************/
+.estilo_encabezadotablaes
+{
+    font-size: 12px!important;
+    color:#000000!important;
+    font-weight: bold!important;
+    width: 50px!important;
+    white-space: normal!important;
+    text-align: left!important;
+    word-break:break-all!important;
+}
+/*****************************************************************/
+/*****************************************************************/
+/*****************************************************************/
+.estilo_tablaresumen
+{
+    font-size: 12px;
+    width: 20px;
+    color:#000000;
+    white-space: normal!important;    
+    text-align: right!important;
+    word-break:break-all!important;
+}
+/*****************************************************************/
+/*****************************************************************/
+/*****************************************************************/
+.enlaceRetorno
+{
+  font-family:Arial, Helvetica, sans-serif;
+  font-weight: bold;      
+}
+
+  .menuCSS3 ul {
+		display: flex;
+		padding: 0;
+		margin: 0;
+		list-style: none;
+	}
+	.menuCSS3 a {
+		display: block;
+		padding: 2em;
+		background-color: #F9B53C;
+		text-decoration: none;
+		color: #191C26;
+	}
+	.menuCSS3 a:hover {
+		background-color: #CC673B;
+	}
+	.menuCSS3 ul li ul {
+		display: none;
+	}
+	.menuCSS3 ul li a:hover + ul, .menuCSS3 ul li ul:hover {
+		display: block;
+	}
+        
+        .dropdownmenu ul, .dropdownmenu li {
+	margin: 0;
+	padding: 0;
+}
+.dropdownmenu ul {
+	background: gray;
+	list-style: none;
+	width: 100%;
+}
+.dropdownmenu li {
+	float: left;
+	position: relative;
+	width:auto;
+}
+.dropdownmenu a {
+	background: #FFF;
+	color: #000;
+	display: block;
+	font: bold 12px/20px sans-serif;
+	padding: 10px 25px;
+	text-align: center;
+	text-decoration: none;
+	-webkit-transition: all .25s ease;
+	-moz-transition: all .25s ease;
+	-ms-transition: all .25s ease;
+	-o-transition: all .25s ease;
+	transition: all .25s ease;
+}
+.dropdownmenu li:hover a {
+	background: #c4c4c4;
+}
+#submenu {
+	left: 0;
+	opacity: 0;
+	position: absolute;
+	top: 35px;
+	visibility: hidden;
+	z-index: 1;
+}
+li:hover ul#submenu {
+	opacity: 1;
+	top: 40px;	/* adjust this as per top nav padding top & bottom comes */
+	visibility: visible;
+}
+#submenu li {
+	float: none;
+	width: 100%;
+}
+#submenu a:hover {
+	background: #c4c4c4;
+}
+#submenu a {
+	background-color:#fff;
+}
+/*****************************************************************/
+/*****************************************************************/
+/*****************************************************************/
+/*****************************************************************/
+/*****************************************************************/
+/*****************************************************************/
+/*****************************************************************/
+/*****************************************************************/
+/*****************************************************************/
+/*****************************************************************/
+/*****************************************************************/
+/*****************************************************************/

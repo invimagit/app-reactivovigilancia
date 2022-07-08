@@ -1,0 +1,1096 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="../template/mainMenuTemplate.xhtml">
+    <ui:define name="content">
+        <h:form  id="frmSeguridad">
+
+            <p:dialog header="Reactivo Vigilancia - Registrar Visitas" widgetVar="dlgRegistrarVisita" modal="true" dynamic="true" positionType="absolute">
+                <ui:include src="registrarVisitas.xhtml" />
+            </p:dialog>
+
+            <p:dialog modal="true"  resizable="false" draggable="false" id="popupErrorCreaRegistro" dynamic="true" widgetVar="popupErrorCrea"
+                      visible="#{not empty reporteSeguridadBean.mensajes}">
+                <p:panel id="panelMensajes" style="border: none;alignment-adjust: central" styleClass="cssPanelAcidos">
+                    <p:panel style="border: none;alignment-adjust: central" >
+                        <p:outputLabel value="#{reporteSeguridadBean.mensajes}" id="lblMensaje"/>
+                        <p:message for="panelContenedorSeguridad"/>
+                    </p:panel>
+                    <p:panel id="botonesVario" style="border: none;alignment-adjust: central">
+                        <p:commandButton  id="btnMensaje" value="Aceptar" action="#{reporteSeguridadBean.btnNuevoReporte_usuario_diferente_invima()}">
+                            <f:ajax event="click" onevent="popupErrorCrea.hide()"/>
+                        </p:commandButton>
+                    </p:panel>
+                </p:panel>
+            </p:dialog>
+            <p:dialog modal="true" id="popupRegistroRecibido" closable="false" widgetVar="popupErrorCreaResultado"
+                      visible="#{not empty facesContext.messageList and facesContext.maximumSeverity.ordinal == 0}" >
+                <p:panel id="panelResultado" style="border: none;alignment-adjust: central;" styleClass="cssPanelesAcidos">
+                    <p:panel style="border: none;alignment-adjust: central" >
+                        <p:outputLabel value="#{reporteSeguridadBean.mensajes}" id="lblMensajeResultado"/>
+                        <p:message for="panelContenedorSeguridad"/>
+                    </p:panel>
+                    <p:panel id="botonesVarioResultado" style="border: none;alignment-adjust: central">
+                        <p:commandButton  id="btnMensajeResultado" value="Aceptar."  ajax="false" immediate="true">
+                            <f:ajax event="click" onevent="popupErrorCreaResultado.hide()"/>
+                        </p:commandButton>
+                    </p:panel>
+                </p:panel>
+            </p:dialog>
+            <p:messages id="mensajesSeguridad" showDetail="true" severity="warn,info"/>
+            <p:panel id="panelContenedorSeguridad" style="border: none;width: 100%" widgetVar="panelContenedorSeguridad">
+                <p:panel  id="panelPrincipalSeguridad" header="#{msg.seguridadTitulo}" style="width: 100%">
+                    <p:panel rendered="#{reporteSeguridadBean.usuarioInvima}"  id="panelMenu" header="Menu" style="width: 100%">
+                        <p:row>
+                            <p:column>
+                                <p:commandButton value="MONITOREO"
+                                                 id="btn_moniotoreo"
+                                                 action="#{reporteSeguridadBean.btnMonitoreo()}" immediate="true"
+                                                 update="panelContenedorSeguridad"/>
+                            </p:column>
+                            <p:column></p:column>
+                            <p:column></p:column>
+                            <p:column >
+                                <p:commandButton value="REPORTE FRIARH"
+                                                 id="btn_friarh"
+                                                 action="#{reporteSeguridadBean.btnREPORTE_FRIARH()}" ajax="false" immediate="true"
+                                                 update="panelContenedorSeguridad"/>
+                            </p:column>
+                            <p:column>
+                                <p:commandButton value="REGISTRAR VISITA"
+                                                 disabled="#{reporteSeguridadBean.enableRegistrarVisita}"
+                                                 type="button"
+                                                 ajax="false" immediate="true"
+                                                 onclick="PF('dlgRegistrarVisita').show();"/>
+                            </p:column>
+
+
+                        </p:row>
+                    </p:panel> 
+                    <p:panel rendered="#{reporteSeguridadBean.monitoreo_activo}" id="panelMonitoreo" header="Monitoreo" style="width: 100%">
+                        <p:panelGrid styleClass="cssPanelesAcidos" style="width: 100%">
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="Seleccion el FRIARH a monitorear"/>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu id="lista_reporte_friarh" style="width:90%"  value="#{reporteSeguridadBean.id_monitoreo_temporal}" >
+                                        <f:selectItem itemValue="" itemLabel="Seleccione..." />
+                                        <f:selectItems value="#{reporteSeguridadBean.lstReactivoMonitoreo}" var="reporte"
+                                                       itemValue="#{reporte}" itemLabel="#{reporte}"/>
+                                        <p:ajax event="change" update="panelMonitoreo id_monitoreo_id"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="id_monitoreo_id" value="#{reporteSeguridadBean.id_monitoreo_temporal}" >
+                                        <f:ajax execute="@this" />
+                                    </p:inputText>
+                                </p:column>
+                                <p:column>
+                                    <p:commandButton id="btnBuscarMonitoreo" value="CARGAR REPORTE"
+                                                     action="#{reporteSeguridadBean.btnCargarMonitoreo()}" ajax="false" immediate="true" process="id_monitoreo_id"
+                                                     update="panelContenedorSeguridad"/>
+                                </p:column>
+                                <p:column >
+                                    <p:commandButton value="NUEVO REPORTE"
+                                                     id="btn_nuevo_monitoreo"
+                                                     action="#{reporteSeguridadBean.btnNuevoMonitoreo()}" ajax="false" immediate="true"
+                                                     update="panelMonitoreo panelContenedorSeguridad"/>
+                                </p:column>
+
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                    <p:panel rendered="#{reporteSeguridadBean.monitoreo_activo_formulario}" 
+                             id="panelMonitoreo2" header="Monitoreo" style="width: 100%">
+                        <p:panelGrid styleClass="cssPanelesAcidos" style="width: 100%">
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="Friarh"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText  disabled="true"  size="30" value="#{reporteSeguridadBean.reactivoMonitoreo.friarh}"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Fecha Ingreso"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText disabled="true" value="#{reporteSeguridadBean.reactivoMonitoreo_fechaIngreso_temporal}"/>
+
+                                </p:column>
+                            </p:row>  
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="Fuente"/>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu style="width:90%"  value="#{reporteSeguridadBean.reactivoMonitoreo.fuente}"
+                                                     id="monitoreo_fuente"
+                                                     valueChangeListener="#{reporteSeguridadBean.changeFuenteMonitoreo}"
+                                                     required="true" requiredMessage="Seleccione el tipo de fuente"
+                                                     >
+                                        <f:selectItem itemValue="" itemLabel="Seleccione..." noSelectionOption="true"/>
+                                        <f:selectItems value="#{reporteSeguridadBean.lstFuentes}" var="reporte"
+                                                       itemValue="#{reporte.cdgFuente}" itemLabel="#{reporte.descripcion}"/>
+                                        <p:ajax event="change" update="panelMonitoreo2"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                                <p:column colspan="2"></p:column>
+
+                            </p:row> 
+                            <p:row id="row_agencia_sanitaria" rendered="#{reporteSeguridadBean.mostrar_row_agencia_sanitaria}">
+                                <p:column>
+                                    <p:outputLabel value="Agencia Sanitaria"/>
+                                </p:column>
+                                <p:column colspan="3">
+                                    <p:inputText id="inputagenciaSanitaria" value="#{reporteSeguridadBean.reactivoMonitoreo.agenciaSanitaria}" size="50"
+                                                 required="true" requiredMessage="Digite la Agencia Sanitaria" 
+                                                 style="width:90%;text-transform: uppercase;"/>
+                                    <p:message for="inputagenciaSanitaria"/>
+                                </p:column>
+                            </p:row> 
+                            <p:row>
+                                <p:column colspan="4">
+                                    <p:outputLabel value="Detalles"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="4">
+                                    <p:inputText id="inputdetalles" value="#{reporteSeguridadBean.reactivoMonitoreo.detalles}" size="50"
+                                                 required="true" requiredMessage="Digite los detalles" 
+                                                 style="width:90%;text-transform: uppercase;"/>
+                                    <p:message for="inputdetalles"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="Aplica"/>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu style="width:90%"  value="#{reporteSeguridadBean.reactivoMonitoreo.aplica}"
+                                                     required="true" requiredMessage="Seleccione el tipo de fuente"
+                                                     id="monitoreo_aplica"
+                                                     valueChangeListener="#{reporteSeguridadBean.changeFuente}">
+                                        <f:selectItem itemValue="" itemLabel="Seleccione..." noSelectionOption="true"/>
+                                        <f:selectItems value="#{reporteSeguridadBean.lstAplica}" var="reporte"
+                                                       itemValue="#{reporte}" itemLabel="#{reporte}"/>
+
+                                    </p:selectOneMenu>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Tipo"/>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu style="width:90%"  value="#{reporteSeguridadBean.reactivoMonitoreo.tipo}"
+                                                     required="true" requiredMessage="Seleccione el tipo de fuente"
+                                                     id="monitoreo_tipo"
+                                                     valueChangeListener="#{reporteSeguridadBean.changeFuente}">
+                                        <f:selectItem itemValue="" itemLabel="Seleccione..." noSelectionOption="true"/>
+                                        <f:selectItems value="#{reporteSeguridadBean.lstTecnoTipoalertas}" var="reporte"
+                                                       itemValue="#{reporte.cdgTipoalertas}" itemLabel="#{reporte.descripcion}"/>
+
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row> 
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="Funcionario Monitoreo"/>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu style="width:90%"  value="#{reporteSeguridadBean.reactivoMonitoreo.funcionarioMonitoreo}"
+                                                     required="true" requiredMessage="Seleccione el tipo de fuente"
+                                                     id="monitereo_funcionario"
+                                                     valueChangeListener="#{reporteSeguridadBean.changeFuente}">
+                                        <f:selectItem itemValue="" itemLabel="Seleccione..." noSelectionOption="true"/>
+                                        <f:selectItems value="#{reporteSeguridadBean.lstFuncionarios}" var="reporte"
+                                                       itemValue="#{reporte.cdgfuncionario}" itemLabel="#{reporte.nmbfuncionario}"/>
+
+                                    </p:selectOneMenu>
+                                </p:column>
+                                <p:column colspan="2"></p:column>
+                            </p:row> 
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="Pagina Web"/>
+                                </p:column>
+                                <p:column colspan="3">
+                                    <p:inputText  id="inputpaginaWeb" value="#{reporteSeguridadBean.reactivoMonitoreo.paginaWeb}" size="50"
+                                                  required="true" requiredMessage="Digite Pagina Web" 
+                                                  style="width:90%;text-transform: uppercase;"/>
+                                    <p:message for="inputdetalles"/>
+                                </p:column>
+                            </p:row> 
+                            <p:row>
+                                <p:column colspan="2"></p:column>
+                                <p:column>
+                                    <p:commandLink id="btnCancelar_monitoreo" value="#{msg.activarCancelar}" 
+                                                   styleClass="vinculoSinDiv" 
+                                                   process="@this" update="panelPrincipalSeguridad"
+                                                   action="#{reporteSeguridadBean.btnCancelar}" oncomplete="limpiarForm()"/>
+                                </p:column>
+                                <p:column colspan="1">
+                                    <!--p:commandButton value="Guardar"
+                                                     action="#{reporteSeguridadBean.btnGuardarMonitoreo()}" ajax="false" immediate="true"
+                                                     update="panelTrazabilidad"/-->
+                                    <p:commandLink id="btnGuardarMonitoreo" value="Guardar" 
+                                                   styleClass="vinculoSinDiv"
+                                                   ajax="false" 
+                                                   action="#{reporteSeguridadBean.btnGuardarMonitoreo}"/>
+                                </p:column>
+
+                            </p:row> 
+
+
+
+                        </p:panelGrid>
+                    </p:panel>
+
+                    <p:panel rendered="#{reporteSeguridadBean.reporte_friarh_activo}" id="panelBuscar" header="Buscar reporte" style="width: 100%">
+                        <p:panelGrid styleClass="cssPanelesAcidos" style="width: 100%">
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="Seleccion el reporte FRIARH"/>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu style="width:90%"  id="reportesFRIARH" value="#{reporteSeguridadBean.friarhVO.friarh}"
+                                                     valueChangeListener="#{reporteSeguridadBean.changeFuente}">
+                                        <f:selectItem itemValue="" itemLabel="Seleccione..."/>
+                                        <f:selectItems value="#{reporteSeguridadBean.lstReportesFRIARH}" var="reporte"
+                                                       itemValue="#{reporte}" itemLabel="#{reporte}"/>
+                                        <p:ajax event="change" update="panelBuscar friarh_id"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="friarh_id" value="#{reporteSeguridadBean.friarhVO.friarh}" >
+                                        <f:ajax execute="@this" />
+                                    </p:inputText>
+                                </p:column>
+
+                                <p:column>
+                                    <p:commandButton id="btnBuscar" value="CARGAR REPORTE"
+                                                     action="#{reporteSeguridadBean.btnBuscar()}" process="friarh_id" ajax="false" immediate="true"
+                                                     update="panelContenedorSeguridad"/>
+                                </p:column>
+                                <p:column >
+                                    <p:commandButton value="NUEVO REPORTE"
+                                                     id="btn_nuevo_reporte"
+                                                     action="#{reporteSeguridadBean.btnNuevoReporte()}" ajax="false" immediate="true"
+                                                     update="panelMonitoreo"/>
+                                </p:column>
+
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+
+                    <p:panel rendered="#{reporteSeguridadBean.reporte_friarh_activo_formulario}" id="panelFechaNotificacion" header="#{msg.seguridadNotificacion}" style="width: 100%">
+                        <p:panelGrid styleClass="cssPanelesAcidos" style="width: 100%">
+                            <p:row>
+                                <p:column>
+                                    <a href="#" onclick="abrirAyuda('visorManualReactivo.xhtml?rutaArchivoPDF=#{beanParametrosGenerales.obtenerDireccionServidor()}ManualesReactivo/docs/InstructivoFRIARH.pdf')">
+                                        <p:graphicImage value="/resources/images/help.png"/>
+                                    </a>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value=""/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="Fecha de Notificación"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText rendered="#{reporteSeguridadBean.usuarioInvima}" disabled="true" id="inputFechaNotificacion" value="#{reporteSeguridadBean.friarhVO.fechaRadicadoWithFormat}"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                    <p:panel rendered="#{reporteSeguridadBean.reporte_friarh_activo_formulario}" id="panelTipoNotificacion" header="#{msg.seguridadTipoNotificacion}" style="width: 100%">
+                        <p:panelGrid styleClass="cssPanelesAcidos" style="width: 100%">
+                            <p:row>
+                                <p:column>
+                                    <center>
+                                        <p:selectOneMenu id="listaTipoNotificacion" value="#{reporteSeguridadBean.friarhVO.cdgTipoalerta}"
+                                                         valueChangeListener="#{reporteSeguridadBean.changeNotificacion}" required="true"
+                                                         requiredMessage="Seleccione el tipo de Notificación">
+                                            <p:ajax event="change" update="panelTiponotificante panelFuenteCaso PanelDatosNotificante panelInformacionDispositivo panelEstadoActual panelDescribeProblema panelPosiblesCausas panelMedidasCorrectivas panelEventosAdversos panelTrazabilidad panelReactivoHurtado"/>
+                                            <f:selectItem itemLabel="Seleccione..." itemValue="" noSelectionOption="true"/>
+                                            <f:selectItems value="#{reporteSeguridadBean.notificacionVOs}" var="notificacion"
+                                                           itemValue="#{notificacion.cdgNotificacion}" itemLabel="#{notificacion.descripcion}"/>
+                                        </p:selectOneMenu>
+                                        <p:message for="listaTipoNotificacion"/>
+                                    </center>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                    <p:panel rendered="#{reporteSeguridadBean.reporte_friarh_activo_formulario}" id="panelTiponotificante" header="#{msg.seguridadTipoNotificante}" style="width: 100%">
+                        <p:panelGrid styleClass="cssPanelesAcidos" style="width:100%">
+                            <p:row>
+                                <p:column>
+                                    <p:selectOneMenu id="listaTiponotificante" value="#{reporteSeguridadBean.friarhVO.cdgNotificante}"
+                                                     required="true" requiredMessage="Seleccione el tipo de notificante"
+                                                     valueChangeListener="#{reporteSeguridadBean.changeNotificante}">
+                                        <p:ajax event="change" update="panelTiponotificante"/>
+                                        <f:selectItem itemValue="" itemLabel="Seleccione..." noSelectionOption="true"/>
+                                        <f:selectItems value="#{reporteSeguridadBean.lstNotificante}" var="notificante"
+                                                       itemValue="#{notificante.cdgNotificante}" itemLabel="#{notificante.descripcion}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="listaTiponotificante"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Otro Notificante"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="inputOtroNotificante" disabled="#{reporteSeguridadBean.mostrarOtroNotificante}" value="#{reporteSeguridadBean.friarhVO.otroNotificante}"
+                                                 style="text-transform: uppercase;" size="60" maxlength="128" autocomplete="off"
+                                                 required="#{!reporteSeguridadBean.mostrarOtroNotificante}" requiredMessage="Digite el otro Notificante"/>
+                                    <p:message for="inputOtroNotificante"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                    <p:panel rendered="#{reporteSeguridadBean.reporte_friarh_activo_formulario}" id="panelFuenteCaso" header="#{msg.seguridadFuente}" style="width: 100%">
+                        <p:panelGrid styleClass="cssPanelesAcidos" style="width: 100%">
+                            <p:row>
+                                <p:column colspan="3">
+                                    <p:outputLabel value="Seleccione la fuente del reporte"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:selectOneMenu id="listaTipoFuente" value="#{reporteSeguridadBean.friarhVO.fuente}"
+                                                     required="true" requiredMessage="Seleccione el tipo de fuente"
+                                                     valueChangeListener="#{reporteSeguridadBean.changeFuente}">
+                                        <f:selectItem itemValue="" itemLabel="Seleccione..." noSelectionOption="true"/>
+                                        <f:selectItems value="#{reporteSeguridadBean.lstFuentes}" var="fuentes"
+                                                       itemValue="#{fuentes.cdgFuente}" itemLabel="#{fuentes.descripcion}"/>
+                                        <p:ajax event="change" update="panelFuenteCaso"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="listaTipoFuente"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Nombre Agencia"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="inputNombreAgencia" disabled="#{reporteSeguridadBean.mostrarNombreAgencia}" value="#{reporteSeguridadBean.friarhVO.nombreAgencia}"
+                                                 style="text-transform: uppercase;" size="60" maxlength="128" required="#{!reporteSeguridadBean.mostrarNombreAgencia}"
+                                                 requiredMessage="Digite el Nombre de la Agencia" autocomplete="off"/>
+                                    <p:message for="inputNombreAgencia"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                    <p:panel rendered="#{reporteSeguridadBean.reporte_friarh_activo_formulario}" id="PanelDatosNotificante" header="#{msg.seguridadDatosNoti}" style="width: 100%">
+                        <p:panelGrid styleClass="cssPanelesAcidos" style="width: 100%" >
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="Nombre o Razón Social"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText disabled="#{reporteSeguridadBean.usuarioInvima}" id="inputRazonSocial" size="60" value="#{reporteSeguridadBean.usuariosVO.nombreEmpresa}"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Ciudad"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText disabled="#{reporteSeguridadBean.usuarioInvima}" id="inputMunicipio" size="30" value="#{reporteSeguridadBean.usuariosVO.nombreMpio}"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="NIT"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText disabled="#{reporteSeguridadBean.usuarioInvima}" id="inputNitR" size="30" value="#{reporteSeguridadBean.usuariosVO.identificacionEmpresa}"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Teléfono"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText disabled="#{reporteSeguridadBean.usuarioInvima}" id="inputTelR" size="11" value="#{reporteSeguridadBean.usuariosVO.telefonoEmpresa}"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="Dirección"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText disabled="#{reporteSeguridadBean.usuarioInvima}" id="inputDirEmpR" size="60" value="#{reporteSeguridadBean.usuariosVO.direccionEmpresa}"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Persona que Reporta"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText disabled="#{reporteSeguridadBean.usuarioInvima}" id="inputPersonaR" size="50" value="#{reporteSeguridadBean.usuariosVO.nombrePersona}"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="País"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText disabled="#{reporteSeguridadBean.usuarioInvima}" id="inputPaisR" size="30" value="#{reporteSeguridadBean.usuariosVO.nombrePais}"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Profesión"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText disabled="#{reporteSeguridadBean.usuarioInvima}" id="inputProfesionR" size="50" value="#{reporteSeguridadBean.profesion}"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="Departamento"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText disabled="#{reporteSeguridadBean.usuarioInvima}" id="inputDepartamentoR" size="30" value="#{reporteSeguridadBean.usuariosVO.nombreDpto}"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="E-mail"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText disabled="#{reporteSeguridadBean.usuarioInvima}" id="inputEmailCorpR" size="50" value="#{reporteSeguridadBean.usuariosVO.emailEmpresa}"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                    <p:panel rendered="#{reporteSeguridadBean.reporte_friarh_activo_formulario}" id="panelInformacionDispositivo" header="#{msg.seguridadInfoReactivo}" style="width: 100%">
+                        <p:panelGrid styleClass="cssPanelesAcidos" style="width: 100%">
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="Clasificación del Reactivo según el riesgo"/>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu id="listaRiesgo" value="#{reporteSeguridadBean.friarhVO.cdgRiesgo}"
+                                                     required="true" requiredMessage="Seleccione el tipo de riesgo">
+                                        <f:selectItem itemLabel="Seleccione..." itemValue="" noSelectionOption="true"/>
+                                        <f:selectItem itemValue="I" itemLabel="Riesgo Nivel I"/>
+                                        <f:selectItem itemValue="II" itemLabel="Riesgo Nivel II"/>
+                                        <f:selectItem itemValue="III" itemLabel="Riesgo Nivel III"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="listaRiesgo"/>
+                                </p:column>                                        <f:selectItem itemValue="III" itemLabel="Riesgo Nivel III"/>
+
+                                <p:column>
+                                    <p:outputLabel value="Referencia"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="inputReferencia" value="#{reporteSeguridadBean.friarhVO.modelo}" size="30"
+                                                 required="true" requiredMessage="Digite le referencia del reactivo" autocomplete="off"
+                                                 style="text-transform: uppercase;"/>
+                                    <p:message for="inputReferencia"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="Registro Sanitario No."/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="inputRS" value="#{reporteSeguridadBean.friarhVO.nroregsan}" size="30"
+                                                 required="true" requiredMessage="Digite el registro sanitario del Reactivo" autocomplete="off"
+                                                 maxlength="25"
+                                                 style="text-transform: uppercase;"/>
+                                    <p:message for="inputRS"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Marca"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="inputMarca" value="#{reporteSeguridadBean.friarhVO.marca}" size="50"
+                                                 required="true" requiredMessage="Digite la marca dle reactivo" autocomplete="off"
+                                                 maxlength="128"
+                                                 style="text-transform: uppercase;"/>
+                                    <p:message for="inputMarca"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Expediente"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="inputExpediente" value="#{reporteSeguridadBean.friarhVO.nroregsan}" size="30"
+                                                 required="true" requiredMessage="Digite el No del Expediente" autocomplete="off"
+                                                 maxlength="25"
+                                                 style="text-transform: uppercase;"/>
+                                    <p:message for="inputExpediente"/>
+                                </p:column>
+
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="Nombre del Reactivo de Diagnóstico In Vitro"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="inputNombreReactivo" value="#{reporteSeguridadBean.friarhVO.nombreReac}" size="60"
+                                                 required="true" requiredMessage="Digite el nombre de Reactivo" autocomplete="off"
+                                                 maxlength="255"
+                                                 style="text-transform: uppercase;"/>
+                                    <p:message for="inputNombreReactivo"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Lote"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="inputLote" value="#{reporteSeguridadBean.friarhVO.lote}" size="10"
+                                                 required="true" requiredMessage="Digite el lote del reactivo" autocomplete="off"
+                                                 maxlength="64"
+                                                 style="text-transform: uppercase;"/>
+                                    <p:message for="inputLote"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                    <p:panel rendered="#{reporteSeguridadBean.reporte_friarh_activo_formulario}" id="panelEstadoActual" header="#{msg.seguridadEstadoActual}" style="width: 100%" visible="#{reporteSeguridadBean.mostrarHurto}">
+                        <p:panelGrid styleClass="cssPanelesAcidos" style="width: 100%">
+                            <p:row>
+                                <p:column colspan="4">
+                                    <p:outputLabel value="Señale el estado actual en el cual se encuentra el producto. En caso de contar con Reactivos de Diagnósticos In Vitro en varios estados seleccione la opción Otra y el campo Cuál? amplié esta información."/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="Estado"/>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu id="listaEstados" value="#{reporteSeguridadBean.friarhVO.estadoReac}"
+                                                     valueChangeListener="#{reporteSeguridadBean.changeEstado}" required="#{reporteSeguridadBean.mostrarHurto}"
+                                                     requiredMessage="Seleccione el estado">
+                                        <f:selectItem itemValue="" itemLabel="Seleccione..." noSelectionOption="true"/>
+                                        <f:selectItems value="#{reporteSeguridadBean.lstEstados}" var="estados"
+                                                       itemValue="#{estados.cdgEstado}" itemLabel="#{estados.descripcion}"/>
+                                        <p:ajax event="change" update="panelEstadoActual"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="listaEstados"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Cuál?" />
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="inputCualOtro" value="#{reporteSeguridadBean.friarhVO.otroEstadoreac}" size="50" maxlength="128"
+                                                 disabled="#{reporteSeguridadBean.mostrarOtroEstado}" required="#{!reporteSeguridadBean.mostrarOtroEstado}"
+                                                 requiredMessage="Digite el Otro Estado" style="text-transform: uppercase;"
+                                                 autocomplete="off"/>
+                                    <p:message for="inputCualOtro"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                    <p:panel rendered="#{reporteSeguridadBean.reporte_friarh_activo_formulario}" id="panelDescribeProblema" header="#{msg.seguridadDescribaProblema}" style="width: 100%" visible="#{reporteSeguridadBean.mostrarHurto}">
+                        <p:panelGrid styleClass="cssPanelesAcidos" style="width: 100%">
+                            <p:row>
+                                <p:column>
+                                    <p:inputTextarea id="inputDescribeProblema" rows="6" cols="160" counter="mostrarProblema" maxlength="32000" 
+                                                     counterTemplate="{0} caracteres faltantes" autoResize="false" required="#{reporteSeguridadBean.mostrarHurto}"
+                                                     value="#{reporteSeguridadBean.friarhVO.problemaReac}" requiredMessage="Digite la descripción del problema"
+                                                     />
+                                    <h:outputText id="mostrarProblema"/>
+                                    <p:message for="inputDescribeProblema"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                    <p:panel rendered="#{reporteSeguridadBean.reporte_friarh_activo_formulario}" id="panelPosiblesCausas" header="#{msg.seguridadPosibleCausa}" style="width: 100%" visible="#{reporteSeguridadBean.mostrarHurto}">
+                        <p:panelGrid styleClass="cssPanelesAcidos" style="width: 100%">
+
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="Seleccione la posible causa que originaron el reporte"/>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu id="inputPosibleCausa" value="#{reporteSeguridadBean.friarhVO.causas}"
+                                                     required="#{reporteSeguridadBean.mostrarHurto}" requiredMessage="Seleccione la posible causa" style="width: 350px;"
+                                                     valueChangeListener="#{reporteSeguridadBean.cambiarCodigosCausa}">
+                                        <p:ajax event="change" update="codigoCausaProbableV,descripcionCausaProbableV"/>
+                                        <f:selectItem itemValue="" itemLabel="Seleccione la causa probable" noSelectionOption="true"/>
+                                        <f:selectItems value="#{reporteSeguridadBean.listaCausasProbables}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="inputPosibleCausa"/>
+                                    <!-- ******************************************************************* -->
+                                    <!-- ******************************************************************* -->
+                                    <p:outputLabel value="Código de Causa:  "/>
+                                    <p:inputText id="codigoCausaProbableV" value="#{reporteSeguridadBean.codigoCausaPV}" readonly="true" style="width: 50px;"/>
+                                    &nbsp;&nbsp;
+                                    <p:outputLabel value="Descripcion:  "/>
+                                    <p:inputTextarea id="descripcionCausaProbableV" rows="6" cols="160" maxlength="2048" 
+                                                     style="width: 350px;" value="#{reporteSeguridadBean.descripcionCausaProbableV}" readonly="true"/>
+                                    <!-- ******************************************************************* -->
+                                    <!-- ******************************************************************* -->
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                    <p:panel rendered="#{reporteSeguridadBean.reporte_friarh_activo_formulario}" id="panelMedidasCorrectivas" header="#{msg.seguridadMedidasCorrectiva}" style="width: 100%" visible="#{reporteSeguridadBean.mostrarHurto}">
+                        <p:panelGrid styleClass="cssPanelesAcidos" style="width: 100%">
+                            <p:row>
+                                <p:column>
+                                    <p:inputTextarea id="inputMedidasCorrectivas" rows="6" cols="160" counter="mostrarMedidas" maxlength="255" 
+                                                     counterTemplate="{0} caracteres faltantes" autoResize="false" required="#{reporteSeguridadBean.mostrarHurto}"
+                                                     value="#{reporteSeguridadBean.friarhVO.medidasCorrectivas}" requiredMessage="Digite las medidas correctivas"/>
+                                    <h:outputText id="mostrarMedidas"/>
+                                    <p:message for="inputMedidasCorrectivas"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                    <p:panel rendered="#{reporteSeguridadBean.reporte_friarh_activo_formulario}" id="panelEventosAdversos" header="#{msg.seguridadEventosAdversos}" style="width: 100%" visible="#{reporteSeguridadBean.mostrarHurto}">
+                        <p:panelGrid styleClass="cssPanelesAcidos" style="width: 100%">
+                            <p:row>
+                                <p:column colspan="3">
+                                    <p:outputLabel value="Se han presentado reportes de Eventos Adversos y/o Incidentes con el uso del Reactivo de Diagnóstico In Vitro reportado"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:selectOneMenu id="listaSiNoEventosAdversos" value="#{reporteSeguridadBean.friarhVO.reporteEventos}"
+                                                     required="#{reporteSeguridadBean.mostrarHurto}" requiredMessage="Seleccione Si ó No se han presentado Eventos Adversos"
+                                                     valueChangeListener="#{reporteSeguridadBean.changeCuantos}">
+                                        <p:ajax event="change" update="panelEventosAdversos"/>
+                                        <f:selectItem itemValue="" itemLabel="Seleccione..." noSelectionOption="true"/>
+                                        <f:selectItem itemValue="SI" itemLabel="SI"/>
+                                        <f:selectItem itemValue="NO" itemLabel="NO"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="listaSiNoEventosAdversos"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Cuantos"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="inputCuantosEventos" value="#{reporteSeguridadBean.friarhVO.cuantosEventos}"
+                                                 onkeypress="return validarSolorNumeros(event)" 
+                                                 disabled="#{reporteSeguridadBean.mostrarCuantosDesc}"
+
+                                                 required="#{reporteSeguridadBean.mostrarHurto and !reporeporteSeguridadBean.mostrarCuantosDesc}"
+                                                 requiredMessage="Digite cuantos Eventos se han reportado" autocomplete="off"/>
+                                    <p:message for="inputCuantosEventos"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="3">
+                                    <p:outputLabel value="En caso afirmativo, realice una breve descripción de evento adverso o Incidente presentado"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="3">
+                                    <p:inputTextarea id="inputEventoAdverso" rows="6" cols="160" counter="mostrarEvento" maxlength="32000" 
+                                                     counterTemplate="{0} caracteres faltantes" autoResize="false"
+                                                     value="#{reporteSeguridadBean.friarhVO.descripcionEvento}"
+                                                     disabled="#{reporteSeguridadBean.mostrarCuantosDesc}"
+                                                     required="#{reporteSeguridadBean.mostrarHurto and !reporeporteSeguridadBean.mostrarCuantosDesc}"
+                                                     requiredMessage="Digite la descripción del evento adverso"/>
+                                    <h:outputText id="mostrarEvento"/>
+                                    <p:message for="inputEventoAdverso"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                    <p:panel rendered="#{reporteSeguridadBean.reporte_friarh_activo_formulario}" id="panelTrazabilidad" header="#{msg.seguridadTrazabilidad}" style="width: 100%" visible="#{reporteSeguridadBean.mostrarHurto}">
+                        <p:panelGrid styleClass="cssPanelesAcidos" style="width: 100%">
+                            <p:row>
+                                <p:column>
+                                    <p:growl id="msgs" showDetail="true" for="tablaFriarh01" autoUpdate="true"/>
+                                    <p:dataTable id="tablaFriarh01" var="friarh1" value="#{reporteSeguridadBean.friarh01}" 
+                                                 editable="true" style="margin-bottom: 20px"
+                                                 emptyMessage="No se encontraron resultados">
+                                        <f:facet name="header">
+                                            LISTADO DE REACTIVOS DE DIAGNÓSTICO IN VITRO REPORTADOS - L-FRIARH-01
+                                        </f:facet>
+                                        <p:ajax id="rowedit1" event="rowEdit" listener="#{reporteSeguridadBean.onRowEdit}" update=":frmSeguridad:msgs"/>
+                                        <p:ajax id="rowcancel1" event="rowEditCancel" listener="#{reporteSeguridadBean.onRowCancel}" update=":frmSeguridad:msgs"/>
+                                        <p:column headerText="Nombre del Cliente">
+                                            <p:cellEditor>
+                                                <f:facet name="output"><h:outputText value="#{friarh1.nombreCliente}" style="text-transform: uppercase;"/></f:facet>
+                                                <f:facet name="input">
+                                                    <p:inputText id="inputNomClienteF1" value="#{friarh1.nombreCliente}" style="width:100%;text-transform: uppercase;"
+                                                                 autocomplete="off"/>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+                                        <p:column headerText="Dirección">
+                                            <p:cellEditor>
+                                                <f:facet name="output"><h:outputText value="#{friarh1.direccion}" style="text-transform: uppercase;"/></f:facet>
+                                                <f:facet name="input"><p:inputText id="inputDireccionF1" value="#{friarh1.direccion}" style="width:100%;text-transform: uppercase;"
+                                                                                   autocomplete="off"/>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+                                        <p:column headerText="Departamento">
+                                            <p:cellEditor>
+                                                <f:facet name="output"><h:outputText value="#{friarh1.departamento}" style="text-transform: uppercase;"/></f:facet>
+                                                <f:facet name="input">
+                                                    <p:selectOneMenu id="listaDptoTabla" value="#{friarh1.departamento}"
+                                                                     required="#{reporteSeguridadBean.mostrarHurto}"
+                                                                     requiredMessage="Seleccione el Departamento"
+                                                                     valueChangeListener="#{reporteSeguridadBean.changeDptoTabla}">
+                                                        <p:ajax event="change" update="listaMpioTabla"/>
+                                                        <f:selectItems value="#{reporteSeguridadBean.lstDpto}" var="dtpoTab"
+                                                                       itemLabel="#{dtpoTab.descripcion}" itemValue="#{dtpoTab.descripcion}"/>
+                                                    </p:selectOneMenu>
+                                                    <p:message for="listaDptoTabla"/>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+                                        <p:column headerText="Ciudad">
+                                            <p:cellEditor>
+                                                <f:facet name="output"><h:outputText value="#{friarh1.municipio}" style="text-transform: uppercase;"/></f:facet>
+                                                <f:facet name="input">
+                                                    <p:selectOneMenu id="listaMpioTabla" value="#{friarh1.municipio}"
+                                                                     required="#{reporteSeguridadBean.mostrarHurto}"
+                                                                     requiredMessage="Seleccione el municipio">
+                                                        <f:selectItems value="#{reporteSeguridadBean.lstMpioTabla}" var="mpioTabla"
+                                                                       itemLabel="#{mpioTabla.ciudad}" itemValue="#{mpioTabla.ciudad}"/>
+                                                    </p:selectOneMenu>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+                                        <p:column headerText="Teléfono">
+                                            <p:cellEditor>
+                                                <f:facet name="output"><h:outputText value="#{friarh1.telefono}" /></f:facet>
+                                                <f:facet name="input">
+                                                    <p:inputText id="inputTelefonoF1" value="#{friarh1.telefono}" style="width:100%;text-transform: uppercase;"
+                                                                 onkeypress="return validarNumerosTelefonicos(event);" size="11"
+                                                                 required="#{reporteSeguridadBean.mostrarHurto}" requiredMessage="Digite Teléfono"  autocomplete="off"/>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+                                        <p:column headerText="Nombre del Contacto">
+                                            <p:cellEditor>
+                                                <f:facet name="output"><h:outputText value="#{friarh1.nombreContacto}" style="text-transform: uppercase;"/></f:facet>
+                                                <f:facet name="input">
+                                                    <p:inputText id="inputNomContactoF1" value="#{friarh1.nombreContacto}" style="width:100%;text-transform: uppercase;"
+                                                                 autocomplete="off"/>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+                                        <p:column headerText="Nombre del Reactivo de Diagnóstico In Vitro">
+                                            <p:cellEditor>
+                                                <f:facet name="output"><h:outputText value="#{friarh1.nombreReactivo}" style="text-transform: uppercase;"/></f:facet>
+                                                <f:facet name="input">
+                                                    <p:inputText id="inputNomReactivoF1" value="#{friarh1.nombreReactivo}" style="width:100%;text-transform: uppercase;"
+                                                                 autocomplete="off"/>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+                                        <p:column headerText="Registro Sanitario">
+                                            <p:cellEditor>
+                                                <f:facet name="output"><h:outputText value="#{friarh1.registroSanitario}" style="text-transform: uppercase;"/></f:facet>
+                                                <f:facet name="input">
+                                                    <p:inputText id="inputRegSanF1" value="#{friarh1.registroSanitario}" style="width:100%;text-transform: uppercase;"
+                                                                 autocomplete="off"/>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+                                        <p:column headerText="Referencia">
+                                            <p:cellEditor>
+                                                <f:facet name="output"><h:outputText value="#{friarh1.referencia}" style="text-transform: uppercase;"/></f:facet>
+                                                <f:facet name="input">
+                                                    <p:inputText id="inputRefF1" value="#{friarh1.referencia}" style="width:100%;text-transform: uppercase;"
+                                                                 autocomplete="off"/>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+                                        <p:column headerText="Lote">
+                                            <p:cellEditor>
+                                                <f:facet name="output"><h:outputText value="#{friarh1.lote}" style="text-transform: uppercase;"/></f:facet>
+                                                <f:facet name="input">
+                                                    <p:inputText id="inputLoteF1" value="#{friarh1.lote}" style="width:100%;text-transform: uppercase;"
+                                                                 autocomplete="off"/>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+                                        <p:column headerText="Marca">
+                                            <p:cellEditor>
+                                                <f:facet name="output"><h:outputText value="#{friarh1.marca}" style="text-transform: uppercase;"/></f:facet>
+                                                <f:facet name="input">
+                                                    <p:inputText id="inputMarcaF1" value="#{friarh1.marca}" style="width:100%;text-transform: uppercase;"
+                                                                 autocomplete="off"/>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+                                        <p:column headerText="Cantidad">
+                                            <p:cellEditor>
+                                                <f:facet name="output"><h:outputText value="#{friarh1.cantidad}"/></f:facet>
+                                                <f:facet name="input">
+                                                    <p:inputText id="inputCantidadF1" value="#{friarh1.cantidad}" style="width:100%;text-transform: uppercase;"
+                                                                 onkeypress="return validarNumeroIdentificacion(event);" autocomplete="off"/>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+                                        <p:column style="width:32px">
+                                            <p:rowEditor id="row_editor_f1" />
+                                            <p:commandLink id="btnEliminar"  styleClass="ui-icon ui-icon-trash"
+                                                           action="#{reporteSeguridadBean.removeFriarh01(friarh1)}" 
+                                                           ajax="false" immediate="true"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:commandButton id="btnAgregar" value="Agregar Reactivo" process="@this"
+                                                     action="#{reporteSeguridadBean.setFriarh01VO(reporteSeguridadBean.friarh01VO)}" 
+                                                     update="panelTrazabilidad"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                    <p:panel rendered="#{reporteSeguridadBean.reporte_friarh_activo_formulario}" id="panelReactivoHurtado" header="#{msg.efectoHurtado}" style="width: 100%" visible="#{!reporteSeguridadBean.mostrarHurto}">
+                        <p:panelGrid styleClass="cssPanelesAcidos" style="width: 100%">
+                            <p:row>
+                                <p:column colspan="6">
+                                    <p:outputLabel value="1. Relacione la ciudad y la fecha donde se presentó el hurto de (los) Reactivos de Diagnóstico In Vitro"/>
+                                </p:column>
+                            </p:row>                           <p:row>
+                                <p:column>
+                                    <p:outputLabel value="Departamento"/>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu id="listaDptoR" value="#{reporteSeguridadBean.friarhVO.codDepart1}"
+                                                     valueChangeListener="#{reporteSeguridadBean.changeDpto}"
+                                                     required="#{!reporteSeguridadBean.mostrarHurto}"
+                                                     requiredMessage="Seleccione el Departamento">
+                                        <p:ajax event="change" update="listaMpioR"/>
+                                        <f:selectItem itemLabel="Seleccione..." itemValue="" noSelectionOption="true"/>
+                                        <f:selectItems value="#{reporteSeguridadBean.lstDpto}" var="departamento"
+                                                       itemValue="#{departamento.codDepart}" itemLabel="#{departamento.descripcion}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="listaDptoR"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Ciudad"/>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu id="listaMpioR" value="#{reporteSeguridadBean.friarhVO.codMun1}"
+                                                     required="#{!reporteSeguridadBean.mostrarHurto}"
+                                                     requiredMessage="Seleccione el Munipcio">
+                                        <f:selectItem itemValue="" itemLabel="Seleccione..." noSelectionOption="true"/>
+                                        <f:selectItems value="#{reporteSeguridadBean.lstCiudades}" var="ciudades"
+                                                       itemValue="#{ciudades.codMun}" itemLabel="#{ciudades.ciudad}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="listaMpioR"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Fecha"/>
+                                </p:column>
+                                <p:column>
+                                    <p:calendar locale="es"  id  ="inputFechaHurto" value="#{reporteSeguridadBean.friarhVO.fechaHurto}" navigator="true" pattern="yyyy-MM-dd"
+                                                required="#{!reporteSeguridadBean.mostrarHurto}" requiredMessage="Seleccione la fecha del hurto"/>
+                                    <p:message for="inputFechaHurto"/>
+                                </p:column>   
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="5">
+                                    <p:outputLabel value="2. Se presentó la denuncia ante la fiscalía General de la Nación para llevar a cabo la investigación a la que haya lugar"/>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu id="listaSiNoDenuncia" value="#{reporteSeguridadBean.friarhVO.fiscalia}" required="#{!reporteSeguridadBean.mostrarHurto}"
+                                                     requiredMessage="Seleccione Sí ó No presento denunecia ante la Fiscalia">
+                                        <f:selectItem itemValue="" itemLabel="Seleccione..." noSelectionOption="true"/>
+                                        <f:selectItem itemValue="SI" itemLabel="SI"/>
+                                        <f:selectItem itemValue="NO" itemLabel="NO"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="listaSiNoDenuncia"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="6">
+                                    <p:outputLabel value="3. Para notificación de hurto, diligenciar el listado de los Reactivos de Diagnostico In Vitro que serán incluidos en el reporte."/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="6">
+                                    <p:growl id="msgs02" showDetail="true" for="tablaFriarh02" autoUpdate="true"/>
+                                    <p:dataTable id="tablaFriarh02" var="friarh2" value="#{reporteSeguridadBean.friarh02}" 
+                                                 style="margin-bottom:20px" editable="true"
+                                                 emptyMessage="No se encontraron resultados">
+                                        <f:facet name="header">
+                                            LISTADO DE REACTIVOS DE DIAGNÓSTICO IN VITRO HURTADOS - L-FRIARH-02
+                                        </f:facet>
+                                        <p:ajax id="rowedit1" event="rowEdit" listener="#{reporteSeguridadBean.onRowEditF2}" update=":frmSeguridad:msgs02"/>
+                                        <p:ajax id="rowcancel1" event="rowEditCancel" listener="#{reporteSeguridadBean.onRowCancelF2}" update=":frmSeguridad:msgs02"/>
+                                        <p:column headerText="Nombre del Reactivo de Diagnóstico In Vitro">
+                                            <p:cellEditor>
+                                                <f:facet name="output"><h:outputText value="#{friarh2.nombreReactivo}" style="text-transform: uppercase;"/></f:facet>
+                                                <f:facet name="input">
+                                                    <p:inputText id="inputNomReactivoF2" value="#{friarh2.nombreReactivo}" style="width:100%;text-transform: uppercase;"
+                                                                 autocomplete="off"/>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+                                        <p:column headerText="Registro Sanitario">
+                                            <p:cellEditor>
+                                                <f:facet name="output"><h:outputText value="#{friarh2.registroSanitario}" style="text-transform: uppercase;"/></f:facet>
+                                                <f:facet name="input">
+                                                    <p:inputText id="inputRegSanF2" value="#{friarh2.registroSanitario}" style="width:100%;text-transform: uppercase;"
+                                                                 autocomplete="off"/>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+                                        <p:column headerText="Referencia">
+                                            <p:cellEditor>
+                                                <f:facet name="output"><h:outputText value="#{friarh2.referencia}" style="text-transform: uppercase;"/></f:facet>
+                                                <f:facet name="input">
+                                                    <p:inputText id="inputReferenciaF2" value="#{friarh2.referencia}" style="width:100%;text-transform: uppercase;"
+                                                                 autocomplete="off" />
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+                                        <p:column headerText="Lote">
+                                            <p:cellEditor>
+                                                <f:facet name="output"><h:outputText value="#{friarh2.lote}" style="text-transform: uppercase;"/></f:facet>
+                                                <f:facet name="input">
+                                                    <p:inputText id="inputLoteF2" value="#{friarh2.lote}" style="width:100%;text-transform: uppercase;"
+                                                                 autocomplete="off" />
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+                                        <p:column headerText="Marca">
+                                            <p:cellEditor>
+                                                <f:facet name="output"><h:outputText value="#{friarh2.marca}" style="text-transform: uppercase;"/></f:facet>
+                                                <f:facet name="input">
+                                                    <p:inputText id="inputMarcaF2" value="#{friarh2.marca}" style="width:100%;text-transform: uppercase;"
+                                                                 autocomplete="off"/>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+                                        <p:column headerText="Cantidad">
+                                            <p:cellEditor>
+                                                <f:facet name="output"><h:outputText value="#{friarh2.cantidad}" style="text-transform: uppercase;"/></f:facet>
+                                                <f:facet name="input">
+                                                    <p:inputText id="inputCantidadF1" value="#{friarh2.cantidad}" style="width:100%;text-transform: uppercase;"
+                                                                 onkeypress="return validarNumeroIdentificacion(event);" autocomplete="off"/>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+                                        <p:column style="width:32px">
+                                            <p:rowEditor id="row_editor_3" />
+                                            <p:commandLink id="btnEliminar"  styleClass="ui-icon ui-icon-trash"
+                                                           action="#{reporteSeguridadBean.removeFriarh02(friarh2)}" 
+                                                           ajax="false" immediate="true"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="6">
+                                    <p:commandButton id="btnAgregarF2" value="Agregar Reactivo"
+                                                     action="#{reporteSeguridadBean.setFriarh02VO(reporteSeguridadBean.friarh02VO)}" ajax="false" immediate="true"
+                                                     update="panelTrazabilidad"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="5">
+                                    <p:outputLabel value="4. Se da autorización al INVIMA a divulgar la información relacionada en el Anexo L-FRIARH-02, mediante la Red Nacional de Reactivovigilancia"/>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu id="listaSiNoHurtoAutoriza" value="#{reporteSeguridadBean.friarhVO.autorizacion}"
+                                                     required="#{!reporteSeguridadBean.mostrarHurto}" requiredMessage="Seleccione Sí o No Autoriza al INVIMA">
+                                        <f:selectItem itemLabel="Seleccione..." itemValue="" noSelectionOption="true"/>
+                                        <f:selectItem itemValue="SI" itemLabel="SI"/>
+                                        <f:selectItem itemValue="NO" itemLabel="NO"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="listaSiNoHurtoAutoriza"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="6">                                    
+                                    <p:outputLabel value="5. Realice una breve descripción de los hechos del hurto del(los) Reactivos de Diagnóstico In Vitro"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="6">
+                                    <p:inputTextarea id="inputRelatohurto" rows="6" cols="160" counter="mostrarRelato" maxlength="32000" 
+                                                     counterTemplate="{0} caracteres faltantes" autoResize="false"
+                                                     value="#{reporteSeguridadBean.friarhVO.descripcionHurto}"
+                                                     required="#{!reporteSeguridadBean.mostrarHurto}"
+                                                     requiredMessage="Digite el relato del hurto"/>
+                                    <h:outputText id="mostrarRelato"/>
+                                    <p:message for="inputRelatohurto"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+
+                    <p:panel rendered="#{reporteSeguridadBean.reporte_friarh_activo_formulario}" id="panelSeguimiento" header="Seguimiento" style="width: 100%" >
+                        <p:panelGrid rendered="#{reporteSeguridadBean.usuarioInvima}" styleClass="cssPanelesAcidos" style="width: 100%">
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="Digite la nueva observación"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputTextarea id="seguimiento_observaciones" value="#{reporteSeguridadBean.reactivoSeguimiento.observacion}" style="width: 100%">
+                                        <f:ajax execute="@this" />
+                                    </p:inputTextarea>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:inputText id="seguimiento_fecha" value="#{reporteSeguridadBean.reactivoSeguimiento.fechaIngreso}" disabled="true" readonly="true">
+                                        <f:ajax execute="@this" />
+                                    </p:inputText>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="seguimiento_usuario" value="#{reporteSeguridadBean.reactivoSeguimiento.usuario}" disabled="true"  readonly="true" >
+                                        <f:ajax execute="@this" />
+                                    </p:inputText>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                        <p:panelGrid rendered="#{reporteSeguridadBean.usuarioInvima}" styleClass="cssPanelesAcidos" style="width: 100%">
+                            <p:row>
+                                <p:column colspan="2">
+                                    <p:dataTable id="tablaSeguimientos" var="seguimiento" value="#{reporteSeguridadBean.ltSeguimientos}" editable="true" style="margin-bottom: 20px"
+                                                 emptyMessage="No se encontraron resultados">
+                                        <f:facet name="header">
+                                            SEGUIMIENTOS REGISTRADOS
+                                        </f:facet>
+                                        <p:column headerText="Fecha">
+
+                                            <h:outputText value="#{seguimiento.date_string}"/>
+
+                                        </p:column>
+                                        <p:column headerText="Usuario">
+
+                                            <h:outputText value="#{seguimiento.usuario}" />
+
+                                        </p:column>
+                                        <p:column headerText="Observacion">
+
+                                            <p:inputTextarea value="#{seguimiento.observacion}" disabled="true"  style="width: 100%"/>
+
+                                        </p:column>
+
+                                    </p:dataTable>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+
+
+
+                    <p:panel rendered="#{reporteSeguridadBean.reporte_friarh_activo_formulario}" id="panelBotones" style="border: none; width: 100%;">
+                        <p:panelGrid styleClass="cssPanelesAcidos" style="width: 100%">
+                            <p:row>
+                                <p:column>
+                                    <p:commandLink id="btnAceptar" value="#{msg.activarAceptar}" 
+                                                   styleClass="vinculoSinDiv"
+                                                   update="panelPrincipalSeguridad"
+                                                   process="@form"
+                                                   action="#{reporteSeguridadBean.btnAceptar}">
+                                    </p:commandLink>
+                                </p:column>
+                                <p:column>
+                                    <p:commandLink id="btnCancelar" value="#{msg.activarCancelar}" 
+                                                   styleClass="vinculoSinDiv" 
+                                                   process="@this" update="panelPrincipalSeguridad"
+                                                   action="#{reporteSeguridadBean.btnCancelar}" oncomplete="limpiarForm()"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                </p:panel>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>    

@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="../template/mainMenuTemplate.xhtml">
+    <ui:define name="content">
+        <h:form  onkeypress="if (event.keyCode === 13) { return false; }"   id="formPrincipal">
+            <!-- ************************************************************************************ -->
+            <!-- ************************************************************************************ -->
+            <!-- ************************************************************************************ -->
+                <p:panel id="panelPresentacion" style="border: none">
+                    <center>
+                        <p:graphicImage url="/resources/images/Logo Reactivovigilancia-01.jpg" width="80%" height="80%" style="border:none;" id="logoTecno" alt="ReactivoVigilancia" title="ReactivoVigilancia"/>
+                    </center>
+                        <p:separator/>
+                        <p style="font-family: Verdana;font-size: 14px;">
+                            Bienvenidos al Sistema Web de Reactivovigilancia configurado para la identificación recolección evaluación y 
+                            de los eventos adversos e incidentes, alertas, recall e informes de seguridad, relacionados con los 
+                            reactivos de diagnóstico In vitro durante su uso, con el fin de mejorar la protección de la salud 
+                            y la seguridad de los pacientes, de los usuarios y de todo aquel que se vea implicado directa 
+                            o indirectamente con la utilización de esta tecnología sanitaria.
+                        </p>
+                        <br/>
+                        <p style="font-family: Verdana;font-size: 14px;">
+                         Encontrará en la barra izquierda las opciones disponibles de acuerdo a cada actor del Programa:  
+                         Fabricantes e importadores, Prestadores de Servicio de Salud,  Bancos de Sangre, Banco de Tejidos, 
+                         Banco de Gametos y Embriones, Profesionales Independientes, Usuarios de Reactivos de Diagnostico in vitro,
+                         Entes Territoriales de Salud y administradores del Programa de Reactivovigilancia del Invima.
+                        </p>
+                </p:panel>
+            <!-- ************************************************************************************ -->
+            <!-- ************************************************************************************ -->
+            <!-- ************************************************************************************ -->
+            <!--
+            <p:dataGrid id="dataGridMenus" 
+                        value="#{principalBean.menusMatrizCentral}" 
+                        columns="3"
+                        var="opcMenu">
+                <p:panel style="border: none" rendered="#{opcMenu.mostrar}">
+                    <a  href="#{opcMenu.urlMenu}" onclick="limpiarSesion();"> 
+                        <p:tooltip value="#{opcMenu.descripcionMenu}" for="opcMenu"/>
+                        <p:graphicImage id="opcMenu" value="/resources/iconos/#{opcMenu.opcionMenu}.png"/>
+                    </a>
+                </p:panel>
+            </p:dataGrid>  
+            -->
+        </h:form>
+    </ui:define>
+</ui:composition>
+

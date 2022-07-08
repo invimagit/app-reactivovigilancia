@@ -1,0 +1,232 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="../template/mainMenuTemplate.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:define name="content"> 
+        <p:idleMonitor timeout="1800000">
+            <p:ajax event="idle" listener="#{crearReporteManagedBean.cerrarSesion}"/>
+        </p:idleMonitor>
+        <!-- **************************************************************************************************** -->        
+        <!-- **************************************************************************************************** -->        
+            <p:dialog modal="true" widgetVar="statusDialogConsulta" header="Procesando registros de ReactivoVigilancia" draggable="false" closable="false" resizable="false" width="300" height="300" style="alignment-adjust:middle">
+                 <br/>
+                 <br/>
+                 <br/>
+                 <center>
+                 <p:graphicImage id="animacionBusqueda" value="/resources/images/procesando.gif" alt="Procesando registros de ReactivoVigilancia" title="Procesando registros de ReactivoVigilancia"/>
+                     <br/>
+                 <p:clock pattern="HH:mm:ss dd.MM.yyyy" mode="server" />
+                 </center>
+                 <br/>
+                 <br/>
+             </p:dialog>        
+        <!-- **************************************************************************************************** -->        
+        <!-- **************************************************************************************************** -->        
+            <script language="JavaScript" type="text/JavaScript">
+                        //**************************************************************************
+                        //**************************************************************************
+                        function start() 
+                        {
+                                    console.log ("arrancando animacion");
+                                    PF('statusDialogConsulta').show();
+                        }
+                        //**************************************************************************
+                        //**************************************************************************
+                        function stop() 
+                        {
+                                   PF('statusDialogConsulta').hide();
+                                   console.log ("Deteniendo animacion");
+                        }
+                        //**************************************************************************
+                        //**************************************************************************
+                        function validarFechasConsulta()
+                        {
+                                        console.log ("Entre al script");
+                                        console.log ("************************************************************");
+                                        console.log ("************************************************************");
+                                        var idDepto = "";
+                                        idDepto = $("select[name='frmReportePreRDivsBusqueda:departamento_input'] option:selected").val();
+                                        console.log ("DEPARTAMENTO SELECCIONADO = " + idDepto);
+                                        
+                                        if (idDepto === "")
+                                        {
+                                            alert ("Debe seleccionar un departamento para generar el reporte");
+                                            return (false);
+                                        }
+                                        else
+                                        {
+                                           start();
+                                           return (true);
+                                        }
+                        }   
+            </script>
+        <!-- **************************************************************************************************** -->        
+        <!-- **************************************************************************************************** -->        
+        <div align="center">
+            <h:form  onkeypress="if (event.keyCode === 13) { return false; }"   id="frmReportePreRDivsBusqueda">
+            <!-- ******************************************************** -->
+            <!-- ******************************************************** -->
+            <!-- ******************************************************** -->
+            <!-- ******************************************************** -->
+            <center>
+                <center>
+                    <p:outputLabel value="CONSULTA DE REPORTE DE PRERDIVS DE REACTIVOVIGILANCIA" style="font-weight: bold;font-size: 12px;"/>
+                </center>
+                <br/>
+                <br/>
+                <p:panelGrid columns="2" style="width:1200px" id="displayCrear">
+		  <f:facet name="header">
+		    <p:graphicImage url="/resources/images/logo-invima.png" style="border:none;" id="logoInvimaCrear" alt="Invima"/>
+                  </f:facet>
+                      <p:outputLabel value="Departamento del Reportante:" for="departamento" />
+                      <p:selectOneMenu id="departamento" value="#{beanGeneracionConPreRdivs.departamento}" filter="true" appendTo="@this" 
+                            style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="false">
+                            <p:ajax listener="#{beanGeneracionConPreRdivs.onChangeDepartamento}" update="municipio" 
+                                    process="@this" partialSubmit="true"/>
+                            <f:selectItem itemLabel="Seleccione una opción" itemValue="#{null}" noSelectionOption="true" />
+                            <f:selectItems value="#{beanGeneracionConPreRdivs.listaDepartamentos}"/>
+                       </p:selectOneMenu>
+                      <!-- **************************************************************** -->
+                      <!-- **************************************************************** -->
+                      <p:outputLabel value="Municipio del Reportante:" for="municipio"/>
+                      <p:selectOneMenu id="municipio" value="#{beanGeneracionConPreRdivs.municipio}" filter="true" appendTo="@this"
+                              style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="false">
+                            <f:selectItem itemLabel="Seleccione una opción" itemValue="#{null}" noSelectionOption="true" />
+                            <f:selectItems value="#{beanGeneracionConPreRdivs.listaMunicipios}"/>
+                      </p:selectOneMenu>
+                      <!-- **************************************************************** -->
+                      <!-- **************************************************************** -->
+                  <p:outputLabel value="Fecha Inicial:" for="fechaInicial" />
+                  <p:calendar locale="es" id="fechaInicial" value="#{beanGeneracionConPreRdivs.fechaInicial}" showOn="button" pattern="yyyy/MM/dd" widgetVar="fechaInWV"/>  
+                  <p:outputLabel value="Fecha Final" for="fechaFinal" />
+                  <p:calendar locale="es" id="fechaFinal" value="#{beanGeneracionConPreRdivs.fechaFinal}" showOn="button" pattern="yyyy/MM/dd" widgetVar="fechaFinWV"/>  
+                </p:panelGrid>
+                <br/>
+                <center>
+                    <c:set var = "generaReporte" scope = "session" value = "#{beanGeneracionConPreRdivs.esAdminstrador}"/>
+                    <c:choose>
+                        <c:when test="${generaReporte == false}">
+                            <p:commandButton id="botonGenerarS" value="Generar Reporte" style="vinculoSinDiv"  
+                              action="#{beanGeneracionConPreRdivs.generarReporte}" ajax="true"
+                              onstart="return validarFechasConsulta()" oncomplete="stop()"
+                              update="datosReporte" process="@this"/>
+                        </c:when>
+                        <c:otherwise>
+                            <p:commandButton id="botonGenerarA" value="Generar Reporte" style="vinculoSinDiv"  
+                              action="#{beanGeneracionConPreRdivs.generarReporte}" ajax="true"
+                              onstart="start()" oncomplete="stop()"
+                              update="datosReporte" process="@this"/>
+                        </c:otherwise>
+                    </c:choose>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <p:commandButton id="botonLimpiar" value="Limpiar Campos" style="vinculoSinDiv"  
+                          action="#{beanGeneracionConPreRdivs.limpiarCampos}" ajax="true" onclick="concentrarFocoFechas();"
+                          process="@this" update="fechaInicial,fechaFinal,datosReporte"/>
+                </center>
+                        <br/>
+                        <br/>
+                            <!-- ****************************************************** -->
+                            <!-- ****************************************************** -->
+                            <p:dataTable emptyMessage="Sin registros encontrados" id="datosReporte" var="filaReporte" 
+                                         value="#{beanGeneracionConPreRdivs.datosReporteReactivo}" style="width:1800px"
+                                         paginator="true" rows="20" sortMode="multiple"  styleClass="estilo_tabla" resizableColumns="true" 
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="10,20,30,40,50,60,70,80,90,100">
+                                
+                                <f:facet name="header">
+                                    Listado de Registros Temporales PRERDIVS del Sistema de ReactivoVigilancia
+                                </f:facet>
+                                <!-- ****************************************************** -->
+                                <!-- ****************************************************** -->
+                                <p:column headerText="PRERDIV" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.precol}" id="precolT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="ESTADO REPORTE" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.estadoReporte}" id="estadoReporteT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="DEPARTAMENTO REPORTANTE" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.departamento}" id="departamentoT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="MUNICIPIO REPORTANTE" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.municipio}" id="municipioT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="NOMBRE REPORTANTE" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.nombre_reportante}" id="nombre_reportanteT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="ROL USUARIO" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{beanBusquedaPrerdivs.obtenerNombreRolUsuario(filaReporte.id_rol)}" id="id_rolT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="FECHA INGRESO" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.fecha_ingreso}" id="fecha_ingresoT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="DESCRIPCION EVENTO" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.descripcionEvento}" id="descripcionEventoT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="NOMBRE REACTIVO" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.nombre_dispositivo}" id="nombre_dispositivoT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="INSTITUCIÓN OCURRENCIA" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.entidadIncidente}" id="entidadIncidenteT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="NIT INSTITUCIÓN OCURRENCIA" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.nitEntidadIncidente}" id="nitEntidadIncidenteT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="REGISTRO SANITARIO DISP." styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.registroSanitarioDisp}" id="registroSanitarioDispT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <!--
+                                <p:column headerText="TIPO DE DIAGNÓSTICO" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{beanGeneracionConPreRdivs.obtenerNombreTipoReportePantalla(filaReporte.tipo_reporte)}" id="tipo_reporteT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                -->
+                                <p:column headerText="CAUSA PROBABLE" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{beanGeneracionConPreRdivs.obtenerNombreCausaProbablePantalla(filaReporte.codigo_causa)}" id="codigo_causaT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="MEDIDA EJECUTADA" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{beanGeneracionConPreRdivs.obtenerNombreMedidaEjecutadaPantalla(filaReporte.medidaEjecutada)}" id="medidaEjecutadaT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <!-- ****************************************************** -->
+                                <!-- ****************************************************** -->
+                            </p:dataTable>                            
+                            <!-- ****************************************************** -->
+                            <!-- ****************************************************** -->
+                            <br/>
+                <p:separator/>
+                <p:panel id="panelExportacion" header="Exporte los resultados a los siguientes formatos" style="width:1800px">
+                    <center>
+                        <h:commandLink>
+                            <p:graphicImage value="/resources/images/excel.png" style="border:none;" id="expExcel"/>
+                            <p:dataExporter type="xls" target="datosReporte" fileName="ConsultaPrerdivsReactivo" pageOnly="false"/>
+                        </h:commandLink>
+                        &nbsp;&nbsp;&nbsp;
+                        <h:commandLink>
+                            <p:graphicImage value="/resources/images/csv.png" style="border:none;" id="expCSV"/>
+                            <p:dataExporter type="csv" target="datosReporte" fileName="ConsultaPrerdivsReactivo" pageOnly="false" />
+                        </h:commandLink>
+                        &nbsp;&nbsp;&nbsp;
+                        <h:commandLink>
+                            <p:graphicImage value="/resources/images/xml.png" style="border:none;" id="expXML"/>
+                            <p:dataExporter type="xml" target="datosReporte" fileName="ConsultaPrerdivsReactivo" pageOnly="false" />
+                        </h:commandLink>                
+                    </center>
+                </p:panel>
+            <br/>
+            <br/>
+                    <h:commandLink action="#{baseBean.regresar}">
+                            <p:graphicImage value="../resources/images/home.png"/>
+                            <h:outputText value="Regresar a la Pantalla Principal" styleClass="enlaceRetorno"/>
+                    </h:commandLink>
+            </center>
+            <!-- ******************************************************** -->
+            <!-- ******************************************************** -->
+            <!-- ******************************************************** -->
+            <!-- ******************************************************** -->
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,258 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="../template/mainMenuTemplate.xhtml">
+    <ui:define name="content">
+        <h:form  onkeypress="if (event.keyCode === 13) { return false; }"   id="frmUsuariosInternet">
+            <p:dialog modal="true"  resizable="false" draggable="false" id="popupErrorCreaRegistro" dynamic="true" widgetVar="popupErrorCrea"
+                      visible="#{not empty facesContext.messageList and facesContext.maximumSeverity.ordinal == 3}">
+                <p:panel id="panelMensajes" style="border: none;alignment-adjust: central" styleClass="cssPanelAcidos">
+                    <p:panel style="border: none;alignment-adjust: central" >
+                        <!--<p:messages for="panelContenedor" />-->
+                        <p:outputLabel value="#{reactivoUsuarioInternetBean.mensajes}" id="lblMensaje"/>
+                        <p:message for="panelContenedorUsuarios"/>
+                    </p:panel>
+                    <!--<div class="botton_container">-->
+                    <p:panel id="botonesVario" style="border: none;alignment-adjust: central">
+                        <p:commandButton  id="btnMensaje" value="Aceptar" >
+                            <f:ajax event="click" onevent="popupErrorCrea.hide()"/>
+                        </p:commandButton>
+                    </p:panel>
+                    <!--</div>-->
+                </p:panel>
+            </p:dialog>
+            <p:dialog modal="true" id="popupRegistroRecibido" closable="false" widgetVar="popupErrorCreaResultado"
+                      visible="#{not empty facesContext.messageList and facesContext.maximumSeverity.ordinal == 0}" >
+                <p:panel id="panelResultado" style="border: none;alignment-adjust: central;" styleClass="cssPanelesAcidos">
+                    <p:panel style="border: none;alignment-adjust: central" >
+                        <!--<p:messages for="panelContenedor" />-->
+                        <p:outputLabel value="#{reactivoUsuarioInternetBean.mensajes}" id="lblMensajeResultado"/>
+                        <p:message for="panelContenedorUsuarios"/>
+                    </p:panel>
+                    <!--<div class="botton_container">-->
+                    <p:panel id="botonesVarioResultado" style="border: none;alignment-adjust: central">
+                        <p:commandButton  id="btnMensajeResultado" value="Aceptar" action="#{reactivoUsuarioInternetBean.retornoResultadoOK}" ajax="false" immediate="true">
+                            <f:ajax event="click" onevent="popupErrorCreaResultado.hide()"/>
+                        </p:commandButton>
+                    </p:panel>
+                </p:panel>
+            </p:dialog>
+            <p:panel id="panelContenedorUsuarios" style="border: none;width: 100%;">
+                <p:panel id="panelPrincipalUsuarios" header="Editar Usuario de Internet" style="border: none; width: 100%;">
+
+                    <p:panel id="panelDatosNecesarios" header="Seleccione el usuario a editar" style="border: none; width: 100%;">
+                        <p:panelGrid styleClass="cssPanelesAcidos" style="width: 100%;">
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="Ingrese la Cédula o Usuario:"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="inputCedula_usuario" value="#{reactivoUsuarioInternetBean.cedula}"  autocomplete="off" style="width: 90%;">
+                                            <f:ajax execute="@this" />
+                                    </p:inputText>
+                                    <p:message for="inputCedula"/>
+                                </p:column>
+                                <p:column>
+                                    <p:commandButton id="btnBuscarUsuario" value="Buscar"
+                                                     action="#{reactivoUsuarioInternetBean.btnBuscarUsuarioInternet()}" ajax="false" immediate="true"
+                                                     update="panelContenedorUsuarios"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                    <p:panel rendered="#{reactivoUsuarioInternetBean.mostrar_datos_usuario_buscado}" id="panelCreacionUsuarios" header="Datos del usuario" style="border: none;width: 100%;">
+                        <p:panelGrid styleClass="cssPanelesAcidos" style="width: 100%;">
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="Cédula:"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="inputCedula" required="true" requiredMessage="#{msg.usuariosDocumentoRequerido}"
+                                                 value="#{reactivoUsuarioInternetBean.usuario_buscado.identificacionPersona}" size="10" maxlength="11"
+                                                 onkeypress="return validarSolorNumeros(event);"
+                                                 autocomplete="off"/>
+                                    <p:message for="inputCedula"/>
+                                </p:column>
+                                <p:column >
+                                    <p:outputLabel value="Nombres y apellidos:"/>
+                                </p:column>
+                                <p:column colspan="3">
+                                    <p:inputText id="inputNombreApelllidos" required="true" requiredMessage="#{msg.usuariosNombreRequerido}"
+                                                 value="#{reactivoUsuarioInternetBean.usuario_buscado.nombrePersona}" size="60" maxlength="128" style="text-transform: uppercase;"
+                                                 autocomplete="off"/>
+                                    <p:message for="inputNombreApelllidos"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="#{msg.telefono}"/>
+                                </p:column>
+                                <p:column >
+                                    <p:inputText id="inputTelefonoPersonal" required="true" requiredMessage="#{msg.telefonoRequerido}"
+                                                 value="#{reactivoUsuarioInternetBean.usuario_buscado.telefonoPersona}" maxlength="10" size="10"
+                                                 onkeypress="return validarNumerosTelefonicos(event);"
+                                                 autocomplete="off"/>
+                                    <p:message for="inputTelefonoPersonal"/>
+                                </p:column>
+                                <p:column >
+                                    <p:outputLabel value="Correo electrónico personal:"/>
+                                </p:column>
+                                <p:column colspan="3">
+                                    <p:inputText id="inputCorreoPersonal" required="true" requiredMessage="#{msg.correoSolRequerido}"
+                                                 validatorMessage="#{msg.correoOrgValidator}" value="#{reactivoUsuarioInternetBean.usuario_buscado.emailPersona}"
+                                                 autocomplete="off" size="60" maxlength="128">
+                                        <f:validateRegex
+                                            pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                                    </p:inputText>
+                                    <p:message for="inputCorreoPersonal"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="6">
+                                    <p:outputLabel value="Datos de la empresa donde labora"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="Nit:"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="inputNit" required="true" requiredMessage="#{msg.nitRequerido}"
+                                                 value="#{reactivoUsuarioInternetBean.usuario_buscado.identificacionEmpresa}" size="10" maxlength="11"
+                                                 onkeypress="return validarSolorNumeros(event);"
+                                                 autocomplete="off"/>
+                                    <p:message for="inputNit"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Nombre de la empresa:"/>
+                                </p:column>
+                                <p:column colspan="3">
+                                    <p:inputText id="inputNombreRazonSocial" required="true" requiredMessage="#{msg.nombreRazonRequerido}"
+                                                 value="#{reactivoUsuarioInternetBean.usuario_buscado.nombreEmpresa}" size="65" maxlength="128"
+                                                 style="text-transform: uppercase;" autocomplete="off"/>
+                                    <p:message for="inputNombreRazonSocial"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="País:"/>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu id="listaPais" value="#{reactivoUsuarioInternetBean.usuario_buscado.cdgPais}"
+                                                     required="true" requiredMessage="#{msg.paisRequerido}" 
+                                                     valueChangeListener="#{reactivoUsuarioInternetBean.changePais}" filter="true"
+                                                     filterMatchMode="startsWith">
+                                        <p:ajax update="listaDpto,listaMpio" event="change"/>
+                                        <f:selectItem itemValue="" itemLabel="Seleccione..." noSelectionOption="true"/>
+                                        <f:selectItems value="#{reactivoUsuarioInternetBean.lstPais}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="listaPais"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Departamento:"/>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu id="listaDpto" requiredMessage="#{msg.departamentoRequerido}" 
+                                                     required="#{reactivoUsuarioInternetBean.activaDptoMpioOrga}" 
+                                                     disabled="#{!reactivoUsuarioInternetBean.activaDptoMpioOrga}"
+                                                     value="#{reactivoUsuarioInternetBean.usuario_buscado.codDepart}"
+                                                     valueChangeListener="#{reactivoUsuarioInternetBean.changeDpto}" filter="true"
+                                                     filterMatchMode="startsWith">
+                                        <p:ajax update="listaMpio" event="change"/>
+                                        <f:selectItem itemValue="" itemLabel="Seleccione..." noSelectionOption="true"/>
+                                        <f:selectItems value="#{reactivoUsuarioInternetBean.lstDpto}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="listaDpto"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Ciudad:"/>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu id="listaMpio" requiredMessage="#{msg.ciudadRequerido}"
+                                                     required="#{reactivoUsuarioInternetBean.activaDptoMpioOrga}" disabled="#{!reactivoUsuarioInternetBean.activaDptoMpioOrga}"
+                                                     value="#{reactivoUsuarioInternetBean.usuario_buscado.codMun}" filter="true"
+                                                     filterMatchMode="startsWith">
+                                        <f:selectItem itemValue="" itemLabel="Seleccione..." noSelectionOption="true"/>
+                                        <f:selectItems value="#{reactivoUsuarioInternetBean.lstCiudad}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="listaMpio"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="Dirección:"/>
+                                </p:column>
+                                <p:column colspan="3">
+                                    <p:inputText id="inputDireccion" value="#{reactivoUsuarioInternetBean.usuario_buscado.direccionEmpresa}"
+                                                 required="true" requiredMessage="#{msg.direccionEstablecimientoRequerido}" size="64"
+                                                 maxlength="60" style="text-transform: uppercase;" autocomplete="off"/>
+                                    <p:message for="inputDireccion"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Teléfono:"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="inputTelefonoOrg" required="true" requiredMessage="#{msg.telefonoRequerido}"
+                                                 value="#{reactivoUsuarioInternetBean.telefonoOrg}"
+                                                 maxlength="10" size="10"
+                                                 onkeypress="return validarNumerosTelefonicos(event);"
+                                                 autocomplete="off"/>
+                                    <p:message for="inputTelefonoOrg"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <p:outputLabel value="Correo electrónico corporativo:"/>
+                                </p:column>
+                                <p:column >
+                                    <p:inputText id="inputCorreoCorp" required="true" requiredMessage="#{msg.correoSolRequerido}"
+                                                 validatorMessage="#{msg.correoOrgValidator}" value="#{reactivoUsuarioInternetBean.usuario_buscado.emailEmpresa}"
+                                                 autocomplete="off" size="60" maxlength="128">
+                                        <f:validateRegex
+                                            pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                                    </p:inputText>
+                                    <p:message for="inputCorreoCorp"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Cargo desempeñado:"/>
+                                </p:column>
+                                <p:column colspan="3">
+                                    <p:inputText id="inputCargoDesempenado" required="true" requiredMessage="#{msg.usuariosCargoRequerido}"
+                                                 value="#{reactivoUsuarioInternetBean.usuario_buscado.cargoPersona}" size="70" maxlength="128"
+                                                 style="text-transform: uppercase;" autocomplete="off"/>
+                                    <p:message for="inputCargoDesempenado"/>
+                                </p:column>
+                            </p:row>
+                            
+                        </p:panelGrid>
+                    </p:panel>
+                    <center>
+                        <p:panel rendered="#{reactivoUsuarioInternetBean.mostrar_datos_usuario_buscado}"  id="panelBotones" style="border: none; width: 100%;">
+                            <p:panelGrid styleClass="cssPanelesAcidos" style="width: 100%;">
+                                <p:row>
+                                    <p:column>
+                                        <p:commandLink id="btnAceptar" value="Actualizar" 
+                                                       styleClass="vinculoSinDiv"
+                                                       action="#{reactivoUsuarioInternetBean.btnActualizarUsuario()}" 
+                                                       ajax="false" />
+                                    </p:column>
+                                    <p:column>
+                                    <p:commandLink id="btnCancelar" value="Cancelar" 
+                                                   styleClass="vinculoSinDiv"
+                                                   action="#{reactivoUsuarioInternetBean.btnCancelar()}" 
+                                                   ajax="false"/>
+                                </p:column>
+                                </p:row>
+                            </p:panelGrid>
+                        </p:panel>
+                    </center>
+                </p:panel>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

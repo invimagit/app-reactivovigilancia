@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"  
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="template/mainMenuTemplateSinMenu.xhtml">
+	<ui:define name="PÁGINA DE ERROR DE VULNERACIÓN DE SEGURIDAD INFORMÁTICA">
+	</ui:define>
+	<ui:define name="header">
+	</ui:define>
+	<ui:define name="content">
+        <!--*********************************************************************-->
+        <!--*********************************************************************-->
+        <!--Inicio-->
+        <center>
+            <h1>
+                <p:outputLabel styleClass="estilo_titulos" id="tituloGratuita" value="ERROR DE SEGURIDAD"/>
+            </h1>
+                        <p:graphicImage url="/resources/images/candado.jpg" width="25%" height="25%" 
+                          style="border:none;" id="logoTecno" alt="Seguridad del Sistema" title="Seguridad del Sistema"/>		<h2>
+                   <p:outputLabel styleClass="estilo_titulos" id="mensajeErrorSeguridad" value="USTED ESTÁ INTENTANDO EJECUTAR SECUENCIAS DE CROSS SITE SCRIPTING O SQL INJECTION NO VALIDAS EN LA APLICACIÓN"/>
+                </h2>
+		<br/>
+		<br/>
+		<h1>
+                    <b>
+                        <h1>
+                            <p:outputLabel styleClass="estilo_titulos" id="mensajeErrorPersonalizado33" value="Código de Error:  ${sessionScope.codigoErrorPE}"/>
+                            <br/>
+                            <br/>
+                            <p:outputLabel styleClass="estilo_titulos" id="mensajeErrorPersonalizado2" value="Error específico:  ${sessionScope.mensajeErrorPE}"/>
+                        </h1>
+                    </b>
+                </h1>
+		<br/>
+                <br/>
+                    <h:outputLink id="enlaceRegresar" value="faces/index.xhtml" style="font-family: Verdana;">Regresar a la página anterior</h:outputLink>        
+	<br/>
+	<br/>
+        </center>
+        <!--Fin-->
+        <!--*********************************************************************-->
+        <!--*********************************************************************-->
+	</ui:define>
+</ui:composition>
+</html>

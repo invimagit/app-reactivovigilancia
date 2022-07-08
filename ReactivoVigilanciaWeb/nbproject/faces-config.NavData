@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scene Scope="Project" version="2">
+    <Scope Scope="Faces Configuration Only"/>
+    <Scope Scope="Project">
+        <Node id="activar.xhtml" x="1150" y="150" zoom="true"/>
+        <Node id="index.xhtml" x="504" y="112" zoom="true"/>
+        <Node id="recuperarContrasena.xhtml" x="400" y="600" zoom="true"/>
+        <Node id="ReactivoUsuarioInternet.xhtml" x="150" y="300" zoom="true"/>
+        <Node id="crearReporteUsuario.xhtml" x="150" y="300" zoom="true"/>
+        <Node id="Principal.xhtml" x="285" y="371" zoom="true"/>
+        <Node id="pages/reporteEfectos.xhtml" x="513" y="249" zoom="true"/>
+        <Node id="resources/estilo/header.xhtml" x="911" y="250" zoom="true"/>
+        <Node id="*" x="279" y="70" zoom="true"/>
+        <Node id="resources/estilo/barra.xhtml" x="150" y="600" zoom="true"/>
+        <Node id="pages/reporteSeguridad.xhtml" x="650" y="450" zoom="true"/>
+        <Node id="pages/EditarUsuarioInternet.xhtml" x="650" y="450" zoom="true"/>
+        <Node id="pages/EditarUsuarioRed.xhtml" x="650" y="450" zoom="true"/>
+        <Node id="template/mainTemplate.xhtml" x="769" y="205" zoom="true"/>
+        <Node id="resources/estilo/footer.xhtml" x="650" y="300" zoom="true"/>
+        <Node id="resources/estilo/menu.xhtml" x="400" y="450" zoom="true"/>
+        <Node id="template/mainMenuTemplate.xhtml" x="666" y="378" zoom="true"/>
+        <Node id="inscripcion.xhtml" x="171" y="223" zoom="true"/>
+        <Node id="consultas/consultaReporteUsuario.xhtml" x="650" y="450" zoom="true"/>
+    </Scope>
+    <Scope Scope="All Faces Configurations"/>
+</Scene>

@@ -1,0 +1,254 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="../template/mainMenuTemplate.xhtml">
+    <ui:define name="content">
+        <div align="center">
+            <h:form  onkeypress="if (event.keyCode === 13) { return false; }"   id="frmActivarUsuariosInternet" >
+                <script type="text/javascript">
+                    function limpiarForm()
+                    {
+                        document.getElementById("frmActivarUsuariosInternet").reset();
+                    }
+                </script>
+                <p:messages id="mensajesActivar" showDetail="true" severity="warn,info"/>
+                <p:panel id="panelContenedorActivar" style="border: none; width: 100%;">
+                    <p:panel id="panelPrincipalActivar" header="#{msg.activarTitulo}" style="border: none; width: 100%;">
+                        <p:panel id="panelBuscar" header="#{msg.activarBusqueda}" style="border: none; width: 100%">
+                            <p:panelGrid styleClass="cssPanelesAcidos" style="border: none; width: 100%;">
+                                <p:row>
+                                    <p:column>
+                                        <p:outputLabel value="#{msg.activarCriterio}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:selectOneMenu id="listaCriterio" required="true" requiredMessage="#{msg.activarCriterioRequerido}"
+                                                         value="#{activarBean.codigoCriterioBuscar}" 
+                                                         valueChangeListener="#{activarBean.changeCriteria}">
+                                            <f:selectItem itemValue="" itemLabel="Seleccione...." noSelectionOption="true"/>
+                                            <f:selectItem itemValue="CC" itemLabel="Cédula"/>
+                                            <f:selectItem itemValue="NO" itemLabel="Nombre"/>
+                                            <p:ajax event="change" update="inputCedulaNombre" />
+                                        </p:selectOneMenu>
+                                        <p:message for="listaCriterio"/>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column>
+                                        <p:outputLabel value="#{activarBean.criterioBusqueda}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText id="inputCedulaNombre" required="true" requiredMessage="#{msg.activarCedulaNombreRequerido}"
+                                                     value="#{activarBean.cedulaNombre}"/>
+                                        <p:message for="inputCedulaNombre"/>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column>
+                                        <p:commandLink id="btnBuscar" value="#{msg.activarBuscar}" 
+                                                       styleClass="vinculoSinDiv"
+                                                       update="panelResultado"
+                                                       process="@all"
+                                                       action="#{activarBean.buscar()}" 
+                                                       >
+                                        </p:commandLink>
+                                    </p:column>
+                                    <p:column>
+                                        <p:commandLink id="btnPendientes" value="#{msg.activarPendientes}" 
+                                                       process="@this"
+                                                       styleClass="vinculoSinDiv"
+                                                       update="panelPrincipalActivar"
+                                                       action="#{activarBean.pendientes()}" 
+                                                       >
+                                        </p:commandLink>
+                                    </p:column>
+                                </p:row>
+                            </p:panelGrid>
+                        </p:panel>
+                        <p:panel id="panelResultado" header="#{msg.activarResultadoBusqueda}" style="border: none; width: 100%;" visible="#{activarBean.mostrarResultado}">
+                            <p:panelGrid styleClass="cssPanelesAcidos" style="width: 100%">
+                                <p:row>
+                                    <p:column>
+                                        <p:outputLabel value="#{msg.activarResultados}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:selectOneMenu id="listaCedulaNombre" required="" requiredMessage="#{msg.activarResultadosRequerido}"
+                                                         value="#{activarBean.codigoNombreSeleccionado}" 
+                                                         valueChangeListener="#{activarBean.listenerSubmit}">
+                                            <p:ajax update="panelCuadro" event="change"/>
+                                            <f:selectItem itemValue="" itemLabel="Seleccione..." noSelectionOption="true"/>
+                                            <f:selectItems value="#{activarBean.lstUsuarios}"/>
+                                        </p:selectOneMenu>
+                                    </p:column>
+                                </p:row>
+                            </p:panelGrid>
+                        </p:panel>
+                        <p:panel id="panelCuadro" visible="#{activarBean.mostrarCuadro}" header="#{msg.activarUsuario}" style="border: none; width: 100%;">
+                            <p:panelGrid styleClass="cssPanelesAcidos" style="width: 100%;">
+                                <p:row>
+                                    <p:column>
+                                        <p:outputLabel value="Identificación"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText id="inputIdentificacion" disabled="true" value="#{activarBean.usuarioSeleccionado.identificacionPersona}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:outputLabel value="Nombre"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText id="inputNombre" disabled="true" value="#{activarBean.usuarioSeleccionado.nombrePersona}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:outputLabel value="Teléfono"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText id="inputTelefono" disabled="true" value="#{activarBean.usuarioSeleccionado.telefonoPersona}"/>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column>
+                                        <p:outputLabel value="Cargo"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText id="inputCargoDes" disabled="true" value="#{activarBean.usuarioSeleccionado.cargoPersona}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:outputLabel value="Correo Electrónico Personal"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText id="inputEmailPersonal" disabled="true" value="#{activarBean.usuarioSeleccionado.emailPersona}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:outputLabel value="Usuario"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText id="inputUsuarioR" disabled="true" value="#{activarBean.usuarioSeleccionado.usuario}"/>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column>
+                                        <p:outputLabel value="Nit de la Empresa"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText id="inputNitE" disabled="true" value="#{activarBean.usuarioSeleccionado.identificacionEmpresa}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:outputLabel value="Nombre de la Empresa"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText id="inputNomEmp" disabled="true" value="#{activarBean.usuarioSeleccionado.nombreEmpresa}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:outputLabel value="Teléfono"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText id="inputTelEmp" disabled="true" value="#{activarBean.usuarioSeleccionado.telefonoEmpresa}"/>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column>
+                                        <p:outputLabel value="País"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText id="inputPais" disabled="true" value="#{activarBean.usuarioSeleccionado.cdgPais}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:outputLabel value="Departamento"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText id="inputDpto" disabled="true" value="#{activarBean.usuarioSeleccionado.codDepart}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:outputLabel value="Ciudad"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText id="inputCiudad" disabled="true" value="#{activarBean.usuarioSeleccionado.codMun}"/>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column>
+                                        <p:outputLabel value="Dirección de la Empresa"/>
+                                    </p:column>
+                                    <p:column colspan="2">
+                                        <p:inputText id="inputDirEmp" disabled="true" value="#{activarBean.usuarioSeleccionado.direccionEmpresa}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:outputLabel value="Correo Electrónico Corporativo"/>
+                                    </p:column>
+                                    <p:column colspan="2">
+                                        <p:inputText id="inputEmailCorp" disabled="true" value="#{activarBean.usuarioSeleccionado.emailEmpresa}"/>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column colspan="6">
+                                        <p:outputLabel value="Actualización del Estado de la Cuenta"/>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column>
+                                        <p:outputLabel value="Estado Actual"/>
+                                    </p:column>
+                                    <p:column colspan="2">
+                                        <p:inputText id="inputEstadoActual" disabled="true" size="30" value="#{activarBean.usuarioSeleccionado.estadoPalabra}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:outputLabel value="Rol Actual"/>
+                                    </p:column>
+                                    <p:column colspan="2">
+                                        <p:inputText id="inputRolActual" disabled="true" size="30" value="#{activarBean.usuarioSeleccionado.rolPalabra}"/>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column>
+                                        <p:outputLabel value="Estado"/>
+                                    </p:column>
+                                    <p:column colspan="2">
+                                        <p:selectOneMenu id="listaEstado" value="#{activarBean.usuarioSeleccionado.estadoUsuario}" valueChangeListener="#{activarBean.changeEstadoUsuario}">
+                                            <f:selectItem itemLabel="Seleccione un Estado para el Usuario" itemValue="0" noSelectionOption="true"/>
+                                            <f:selectItems value="#{activarBean.lstEstados}" />
+                                            <p:ajax event="change" update="listaEstado"/>
+                                        </p:selectOneMenu>
+                                    </p:column>
+                                    <p:column>
+                                        <p:outputLabel value="Rol"/>
+                                    </p:column>
+                                    <p:column colspan="2">
+                                        <p:selectOneMenu id="listaRol" value="#{activarBean.usuarioSeleccionado.idRol}" valueChangeListener="#{activarBean.changeRol}">
+                                            <f:selectItem itemValue="0" itemLabel="Seleccione un Rol" noSelectionOption="true"/>
+                                            <f:selectItems value="#{activarBean.lstRoles}"/>
+                                            <p:ajax event="change" update="listaRol"/>
+                                        </p:selectOneMenu>
+                                    </p:column>
+                                </p:row>
+                            </p:panelGrid>
+                        </p:panel>
+                        <p:panel id="panelBotones" style="border: none; width: 100%;">
+                        <p:panelGrid styleClass="cssPanelesAcidos" style="width: 100%">
+                            <p:row>
+                                <p:column>
+                                    <p:commandLink id="btnAceptar" value="#{msg.activarAceptar}" 
+                                                   styleClass="vinculoSinDiv"
+                                                   immediate="true"
+                                                   ajax="false" 
+                                                   process="@this listaRol listaEstado"
+                                                   action="#{activarBean.btnAceptar}"/>
+                                </p:column>
+                                <p:column>
+                                    <p:commandLink id="btnCancelar" value="#{msg.activarCancelar}" 
+                                                   styleClass="vinculoSinDiv" 
+                                                   process="@this" update="panelPrincipalActivar"
+                                                   action="#{activarBean.btnCancelar}" oncomplete="limpiarForm()"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                    </p:panel>
+                </p:panel>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>
+

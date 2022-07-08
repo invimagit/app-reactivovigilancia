@@ -1,0 +1,259 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <f:loadBundle basename="co.gov.invima.mensajes.mensajes"  var="msg" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <!-- ***************** -->
+        <!-- ***************** -->
+        <!-- Control de cache  -->
+        <meta http-equiv="cache-control" content="no-cache" />
+        <meta http-equiv="expires" content="0" />
+        <meta http-equiv="pragma" content="no-cache" />
+        <!-- ***************** -->
+        <!-- ***************** -->
+        <link rel="stylesheet"  href="#{facesContext.externalContext.requestContextPath}/resources/css/cssLayout.css"  type="text/css" />
+        <link rel="stylesheet"  href="#{facesContext.externalContext.requestContextPath}/resources/css/stylesheetINVIMA.css"  type="text/css" />
+        <link rel="stylesheet"  href="#{facesContext.externalContext.requestContextPath}/resources/css/bootstrap.min.css"  type="text/css" />
+        <link href="#{facesContext.externalContext.requestContextPath}/resources/iconos/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+        <style type="text/css"> .ui-widget,.ui-widget .ui-widget {font-size: 90% !important;}</style>
+        <!-- ***************** -->
+        <!-- ***************** -->
+        <!-- ***************** -->
+        <!-- ***************** -->
+        <title>Bienvenido al Sistema de de Reportes Nacional de ReactivoVigilancia</title>
+    </h:head>
+
+    <h:body id="no_back" style="no_back">
+        <h:form id="formRegVis">
+            <div id="content" class="center_content">
+                <p:dialog header="Confirmación de Envío" id="dlgConfirmacion" widgetVar="dlgConfirmacion" visible="#{registrarVisitaBean.solicitarConf}" class="ui-dialog-mask"  closable="true" width="350">
+                    <p:panel style="border: none;alignment-adjust: central" >
+                        <p:outputLabel value="#{registrarVisitaBean.mensajeError}" id="lblMensajeConfirmacion"/>
+                    </p:panel>
+                </p:dialog>
+                <p:dialog header="Solicitud Vacía" id="dlgSoliVacia" widgetVar="dlgSoliVacia" visible="#{registrarVisitaBean.solicitudVacia}" class="ui-dialog-mask"  closable="true" >
+                    <p:panel style="border: none;alignment-adjust: central" >
+                        <p:outputLabel value="Por favor agregue registros a la solicitud" id="lblMensajeSoliVacia"/>
+                    </p:panel>
+                </p:dialog>
+                <p:dialog header="Resultados de la busqueda" id="dlgBusqueda" widgetVar="dlgBusqueda" visible="#{registrarVisitaBean.busquedaVacia}" class="ui-dialog-mask"  closable="true" >
+                    <p:panel style="border: none;alignment-adjust: central" >
+                        <p:outputLabel value="Lo sentimos, no existen registros asociados" id="lblMensajeBusqueda1"/>
+                        <p:outputLabel value=""/>
+                        <div>
+                            <p:outputLabel value="Está seguro que requiere enviar a SIVICOS planeación de visitas" id="lblMensajeBusquedaVacia"/>
+                            <p:commandButton value="Si" onclick="PF('dlgBusqueda').hide();" actionListener="#{registrarVisitaBean.btnVacioAcciones()}" update="frmSegurida:formRegVis" process="@this"></p:commandButton>
+                            <p:commandButton value="No" onclick="PF('dlgBusqueda').hide();" actionListener="#{registrarVisitaBean.btnActivarCrear()}" update="frmSeguridad:formRegVis" process="@this"></p:commandButton>
+                        </div>
+                    </p:panel>
+                </p:dialog>
+                <p:dialog header="Campo Obligatorio" id="dlgVacio" widgetVar="dlgVacio" visible="#{registrarVisitaBean.inputExpVacio}" class="ui-dialog-mask"  closable="true" >
+                    <p:panel style="border: none;alignment-adjust: central" >
+                        <p:outputLabel value="Por favor ingrese un numero de expediente o registro para realizar la busqueda" id="lblMensajeVacio"/>
+                        <p:outputLabel value=""/>
+                    </p:panel>
+                </p:dialog>
+
+                <p:dialog header="Confirmacion" id="dlgEstaSeguro" widgetVar="dlgEstaSeguro" visible="#{registrarVisitaBean.estaSeguro}" class="ui-dialog-mask"  closable="true" >
+                    <p:panel style="border: none;alignment-adjust: central" >
+                        <div>
+                            <p:outputLabel value="Está seguro que requiere enviar a SIVICOS planeación de visitas" id="lblMensajeBusqueda2"/>
+                            <p:outputLabel value=""/>
+                            <p:commandButton value="Si" actionListener="#{registrarVisitaBean.btnSolicitarPlaneacion()}" onclick="PF('dlgEstaSeguro').hide();" update="frmSeguridad:formRegVis" process="@this"></p:commandButton>
+                            <p:commandButton value="No" onclick="PF('dlgEstaSeguro').hide();"></p:commandButton>
+                        </div>
+                    </p:panel>
+                </p:dialog>
+                <ui:include src="../resources/estilo/header.xhtml"/>
+
+                <div class="central_body">
+
+                    <div class = "tituloRVPopup"> <!--class="tabla_container">-->
+                        <h2>Solicitar Planeación Visitas</h2>
+                    </div>
+                    <div class = "rectanguloSubtitulo">
+                        <h6> Búsqueda de roles</h6> 
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class = "labelNombresTextbox">
+                                <p>*Número de expediente</p>
+                            </div>
+                            <div>
+                                <input type="text" name="inputExp" style="width: 100% ;"></input>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class = "labelNombresTextbox">
+                                <p>*Número de registro sanitario</p>
+                            </div>
+                            <div>
+                                <input type="text" name="inputReg" style="width: 100%;"></input>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 5% !important; margin-top: 0.5% !important;" class="d-flex justify-content-end">
+                        <p:commandButton value="Buscar" 
+                                         update="frmSeguridad:formRegVis"
+                                         class="btn-blue"
+                                         id="btn3" 
+                                         actionListener="#{registrarVisitaBean.onClickBuscarEstablecimientos(param.inputExp, param.inputReg)}"
+                                         process="@this"></p:commandButton>
+                    </div>
+
+                    <p:panel id="panelRegVos" widgetVar="panelRegVos" style="border: none;width: 100%" visible = "#{registrarVisitaBean.consultarEstablecimientos}">
+                        <div class = "rectanguloSubtitulo">
+                            <h6> Roles</h6> 
+                        </div>
+                        <p:dataTable id="tblSedes" var="item" value="#{registrarVisitaBean.lstSedes}"
+                                     style="margin-bottom:0"  emptyMessage="No tiene registros">
+                            <p:column headerText="Seleccionar">
+                                <p:selectBooleanCheckbox value="#{item.seleccionado}">
+                                    <p:ajax listener="#{registrarVisitaBean.onClickSeleccionSede()}"/>
+                                </p:selectBooleanCheckbox>
+                            </p:column>
+                            <p:column headerText="Rol">
+                                <h:outputText value="#{item.rol}" />
+                            </p:column>
+
+                            <p:column headerText="Razón Social o Nombre">
+                                <h:outputText value="#{item.nombre}" />
+                            </p:column>
+
+                            <p:column headerText="No . Documento">
+                                <h:outputText value="#{item.numeroDocumento}" />
+                            </p:column>
+
+                            <p:column headerText="Departamento/Estado/Provincia">
+                                <h:outputText value="#{item.departamento}" />
+                            </p:column>
+                            <p:column headerText="Ciudad - Municipio">
+                                <h:outputText value="#{item.municipio}" />
+                            </p:column>
+                            <p:column headerText="Dirección">
+                                <h:outputText value="#{item.direccion}" />
+                            </p:column>
+                        </p:dataTable>
+
+
+                        <div style="margin-bottom: 5% ; margin-top: 0.5% ;" class="d-flex justify-content-end">
+                            <p:commandButton value="Agregar" 
+                                             class="btn-blue"
+                                             id="btnAgregar" 
+                                             update="frmSeguridad:formRegVis"
+                                             actionListener="#{registrarVisitaBean.onClickAgregarPlaneacion()}"
+
+                                             process="@this"></p:commandButton>
+                        </div>
+
+
+                    </p:panel>
+                    <p:messages id="messages" showDetail="true" closable="true">
+                        <p:autoUpdate/>
+                    </p:messages>
+                    <p:panel id="panelRegSolicPlan" widgetVar="panelRegSolicPlan" style="border: none;width: 100%" visible = "#{registrarVisitaBean.solicitarPlaneacion}">
+                        <div class = "rectanguloSubtitulo">
+                            <h6> Solicitar planeación de visita</h6> 
+                        </div>
+                        <p:dataTable id="tblSedesPV" var="item" value="#{registrarVisitaBean.lstSedesSeleccionadas}"
+                                     style="margin-bottom:0"  emptyMessage="No tiene registros">
+                            <p:column headerText="Seleccionar">
+                                <p:selectBooleanCheckbox value="#{item.seleccionado}">
+                                    <p:ajax listener="#{registrarVisitaBean.onClickSeleccionSede()}"/>
+                                </p:selectBooleanCheckbox>
+                            </p:column>
+                            <p:column headerText="Rol">
+                                <h:outputText value="#{item.rol}" rendered="#{not item.editable}" />
+                                <p:selectOneMenu id="listaRol" value="#{item.rol}"
+                                                 required="true" requiredMessage="Seleccione el Rol" rendered="#{item.editable}">
+                                    <f:selectItem itemLabel="Seleccione..." itemValue="" noSelectionOption="true"/>
+                                    <f:selectItems value="#{registrarVisitaBean.lstRoles}" var="rol"
+                                                   itemValue="#{rol.codigo}" itemLabel="#{rol.descripcion}"/>
+                                </p:selectOneMenu>
+                                <p:message for="listaRol"/>
+                            </p:column>
+                            <p:column headerText="Razón Social o Nombre">
+                                <h:outputText value="#{item.nombre}" rendered="#{not item.editable}" />
+                                <p:inputText value="#{item.nombre}" rendered="#{item.editable}">
+                                    <p:ajax update="@this" />
+                                </p:inputText>
+                            </p:column>
+
+                            <p:column headerText="No . Documento">
+                                <h:outputText value="#{item.numeroDocumento}" rendered="#{not item.editable}"/>
+                                <p:inputText value="#{item.numeroDocumento}" rendered="#{item.editable}">
+                                    <p:ajax update="@this" />
+                                </p:inputText>
+                            </p:column>
+
+                            <p:column headerText="Departamento/Estado/Provincia">
+                                <h:outputText value="#{item.departamento}" rendered="#{not item.editable}"/>
+                                <p:selectOneMenu id="listaDeptos" value="#{item.departamento}"
+                                                 valueChangeListener="#{registrarVisitaBean.onChangeDepartamento}" required="true" requiredMessage="Seleccione el Departamento" rendered="#{item.editable}">
+                                    <p:ajax event="change" update="listaMunicipios @this"/>
+                                    <f:selectItem itemLabel="Seleccione..." itemValue="" noSelectionOption="true"/>
+                                    <f:selectItems value="#{registrarVisitaBean.lstDeptos}" var="deptos"
+                                                   itemValue="#{deptos.id}" itemLabel="#{deptos.nombre}"/>
+                                </p:selectOneMenu>
+                                <p:message for="listaDeptos"/>
+                            </p:column>
+                            <p:column headerText="Ciudad - Municipio">
+                                <h:outputText value="#{item.municipio}" rendered="#{not item.editable}"/>
+                                <p:selectOneMenu id="listaMunicipios" value="#{item.municipio}"
+                                                 required="true" requiredMessage="Seleccione el Municipio" rendered="#{item.editable}">
+                                    <p:ajax update="@this" />
+                                    <f:selectItem itemLabel="Seleccione..." itemValue="" noSelectionOption="true"/>
+                                    <f:selectItems value="#{registrarVisitaBean.lstMunicipios}" var="municipios"
+                                                   itemValue="#{municipios.id}" itemLabel="#{municipios.nombre}">
+                                    </f:selectItems>
+                                </p:selectOneMenu>
+                                <p:message for="listaDeptos"/>
+                            </p:column>
+                            <p:column headerText="Dirección">
+                                <h:outputText value="#{item.direccion}" rendered="#{not item.editable}" />
+                                <p:inputText value="#{item.direccion}" rendered="#{item.editable}">
+                                    <p:ajax update="@this" />
+                                </p:inputText>
+                            </p:column>
+                        </p:dataTable>
+
+                        <div style="margin-bottom: 5% !important; margin-top: 0.5% !important;" class="d-flex justify-content-end">
+                            <p:commandButton
+                                value="Solicitar"
+                                class="btn-blue"
+                                process="@this"
+                                onclick="PF('dlgEstaSeguro').show();">
+                            </p:commandButton>
+                            <p style="line-height:10%;"></p>
+                            <p:commandButton                          
+                                value="Eliminar"
+                                class="btn-blue"
+                                update="frmSeguridad:formRegVis"
+                                process="@this"  actionListener="#{registrarVisitaBean.onClickEliminarPlaneacion()}">
+                            </p:commandButton>
+                            <p style="line-height:10%;"></p>
+                            <p:commandButton                     
+                                update="frmSeguridad:formRegVis"
+                                value="Crear"
+                                class="btn-blue"
+                                process="@this" actionListener="#{registrarVisitaBean.onClickCrearRegistro()}">
+                            </p:commandButton>
+                        </div>
+
+                    </p:panel>
+
+                </div>   
+            </div>
+            <div id="footerRegistrarVisita">
+                <ui:include src="../resources/estilo/footer.xhtml" />
+            </div>
+        </h:form>
+    </h:body>
+
+</html>

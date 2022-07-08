@@ -1,0 +1,208 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="../template/mainMenuTemplate.xhtml">
+    <ui:define name="content">
+        <!-- **************************************************************************************************** -->        
+        <!-- **************************************************************************************************** -->        
+            <p:dialog modal="true" widgetVar="statusDialogConsulta" header="Procesando registros de ReactivoVigilancia" draggable="false" closable="false" resizable="false" width="300" height="300" style="alignment-adjust:middle">
+                 <br/>
+                 <br/>
+                 <br/>
+                 <center>
+                 <p:graphicImage id="animacionBusqueda" value="/resources/images/procesando.gif" alt="Procesando registros de ReactivoVigilancia" title="Procesando registros de ReactivoVigilancia"/>
+                     <br/>
+                 <p:clock pattern="HH:mm:ss dd.MM.yyyy" mode="server" />
+                 </center>
+                 <br/>
+                 <br/>
+             </p:dialog>        
+        <!-- **************************************************************************************************** -->        
+        <!-- **************************************************************************************************** -->        
+            <script language="JavaScript" type="text/JavaScript">
+                        //**************************************************************************
+                        //**************************************************************************
+                        function start() 
+                        {
+                                    console.log ("arrancando animacion");
+                                    PF('statusDialogConsulta').show();
+                        }
+                        //**************************************************************************
+                        //**************************************************************************
+                        function stop() 
+                        {
+                                   PF('statusDialogConsulta').hide();
+                                   console.log ("Deteniendo animacion");
+                        }
+                        //**************************************************************************
+                        //**************************************************************************
+                        function validarFechasConsulta()
+                        {
+                                        console.log ("Entre al script");
+                                        console.log ("************************************************************");
+                                        console.log ("************************************************************");
+                                        if (PF('fechaInWV').getDate() === null || PF('fechaFinWV').getDate() === null)
+                                        {
+                                            alert ("Debe ingresar el rango de fechas inicial y final del reporte solicitado");
+                                            return (false);
+                                        }
+                                        else
+                                        {
+                                           start();
+                                           return (true);
+                                        }
+                        }                        
+            </script>
+        <!-- **************************************************************************************************** -->        
+        <!-- **************************************************************************************************** -->
+        <div align="center">
+                <h:form  onkeypress="if (event.keyCode === 13) { return false; }"   id="formularioReportesEnCero">
+            <center>
+                    <p:outputLabel value="CONSULTA REPORTES TRIMESTRALES EN CERO (SIN EVENTO)" style="font-weight: bold;font-size: 12px;"/>
+                    <p:panelGrid columns="2" style="width:1200px" id="displayCrear">
+                      <f:facet name="header">
+                        <p:graphicImage url="/resources/images/logo-invima.png" style="border:none;" id="logoInvimaCrear" alt="Invima"/>
+                      </f:facet>
+                      <p:outputLabel value="Fecha Inicial:" for="fechaInicial" />
+                      <p:calendar locale="es" id="fechaInicial" value="#{beanDatosRepCero.fechaInicial}" showOn="button" pattern="yyyy/MM/dd" widgetVar="fechaInWV"/>  
+                      <p:outputLabel value="Fecha Final" for="fechaFinal" />
+                      <p:calendar locale="es" id="fechaFinal" value="#{beanDatosRepCero.fechaFinal}" showOn="button" pattern="yyyy/MM/dd" widgetVar="fechaFinWV"/>  
+                    </p:panelGrid>
+                    <br/>
+                    <center>
+                      <p:commandButton id="botonGenerar" value="Generar Reporte" style="vinculoSinDiv"  
+                                       action="#{beanDatosRepCero.generarReporte}" ajax="true" 
+                        update="datosReporte" onstart="return validarFechasConsulta()" oncomplete="stop()"/>
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                      <p:commandButton id="botonLimpiar" value="Limpiar Campos" style="vinculoSinDiv"  
+                                       action="#{beanDatosRepCero.limpiarCampos}" ajax="true" onclick="concentrarFocoFechas();"
+                        process="@this" update="fechaInicial,fechaFinal,datosReporte"/>
+                    </center>
+                            <br/>
+                            <br/>
+                            <p:dataTable emptyMessage="Sin registros encontrados" id="datosReporte" var="filaReporte" 
+                                         value="#{beanDatosRepCero.listadoReportesEnCero}" style="width:1200px"
+                                         paginator="true" rows="10" sortMode="multiple"  styleClass="estilo_tabla" resizableColumns="true" 
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="10,20,30,40,50,60,70,80,90,100">
+                                <f:facet name="header">
+                                    Consulta Reportes Trimestrales en Cero (Sin evento)
+                                </f:facet>
+                                <!--
+                                <p:column headerText="NÚMERO RADICADO" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.numero_radicado}" id="numero_radicadoT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="RAZÓN SOCIAL" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.razon_social}" id="razon_socialT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="NIT EMPRESA" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.nit_empresa}" id="nit_empresaT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="DEPARTAMENTO" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.departamento}" id="departamentoT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="MUNICIPIO" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.municipio}" id="municipioT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="TRIMESTRE" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.trimestre_reportado}" id="trimestre_reportadoT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="AÑO DE REPORTE" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.year_trimestre}" id="year_trimestreT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="TIPO ACTOR" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.tipo_actor}" id="tipo_actorT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="NOTIFICACIÓN" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.notificacion}" id="notificacionT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="FECHA RADICADO" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.fecha_radicado}" id="fecha_radicadoT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="OBSERVACIÓN" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.observacion_reportante}" id="observacion_reportanteT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                -->
+                                <p:column headerText="RADICADO" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.radicado}" id="radicadoT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="EMPRESA" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.empresa}" id="empresaT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="NIT" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.nit}" id="nitT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="COD. DEPARTAMENTO" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.cod_dpto}" id="cod_dptoT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="DEPARTAMENTO" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.departamento}" id="departamentoT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="COD. MUNICIPIO" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.cod_mun}" id="cod_munT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="MUNICIPIO" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.municipio}" id="municipioT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="TRIMESTRE" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.trimestre}" id="trimestreT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="AÑO REPORTE" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.anio_reporte}" id="anio_reporteT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="TIPO DE ACTOR" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.tipo_actor}" id="tipo_actorT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="NOTIFICACIÓN" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.notificacion}" id="notificacionT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="FECHA DE ACTUALIZACIÓN" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.fecha_actualiza}" id="fecha_actualizaT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="OBSERVACIÓN" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.observacion}" id="observacionT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="FECHA REPORTE" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.fecha_reporte}" id="fecha_reporteT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="ID REGISTRO" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.idregistro}" id="idregistroT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                                <p:column headerText="USUARIO" styleClass="estilo_encabezadotablaes">
+                                    <h:outputText value="#{filaReporte.usuario_id}" id="usuario_idT" styleClass="estilo_tablaresumen"/>
+                                </p:column>
+                            </p:dataTable>                            
+                <p:separator/>
+                <p:panel id="panelExportacion" header="Exporte los resultados a los siguientes formatos" style="width:1200px">
+                    <center>
+                        <h:commandLink>
+                            <p:graphicImage value="/resources/images/excel.png" style="border:none;" id="expExcel"/>
+                            <p:dataExporter type="xls" target="datosReporte" fileName="ConsultaReportesCero" pageOnly="false"/>
+                        </h:commandLink>
+                        &nbsp;&nbsp;&nbsp;
+                        <h:commandLink>
+                            <p:graphicImage value="/resources/images/csv.png" style="border:none;" id="expCSV"/>
+                            <p:dataExporter type="csv" target="datosReporte" fileName="ConsultaReportesCero" pageOnly="false" />
+                        </h:commandLink>
+                        &nbsp;&nbsp;&nbsp;
+                        <h:commandLink>
+                            <p:graphicImage value="/resources/images/xml.png" style="border:none;" id="expXML"/>
+                            <p:dataExporter type="xml" target="datosReporte" fileName="ConsultaReportesCero" pageOnly="false" />
+                        </h:commandLink>                
+                    </center>
+                </p:panel>
+            <br/>
+            <br/>
+                    <h:commandLink action="/Principal.xhtml" id="inicio">
+                            <p:graphicImage value="/resources/images/home.png"/>
+                            <h:outputText value="Regresar a la Pantalla Principal" styleClass="enlaceRetorno"/>
+                    </h:commandLink>
+            </center>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

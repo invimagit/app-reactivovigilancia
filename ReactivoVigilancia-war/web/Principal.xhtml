@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="template/mainMenuTemplate.xhtml">
+    <ui:define name="content">
+        <h:form id="formPrincipal">
+            <p:dataGrid id="dataGridMenus" 
+                        value="#{principalBean.menusMatrizCentral}" 
+                        columns="3"
+                        var="opcMenu">
+                <p:panel style="border: none" rendered="#{opcMenu.mostrar}">
+                    <a  href="#{opcMenu.urlMenu}" onclick="limpiarSesion();"> 
+                        <p:tooltip value="#{opcMenu.descripcionMenu}" for="opcMenu"/>
+                        <p:graphicImage id="opcMenu" value="/resources/iconos/#{opcMenu.opcionMenu}.png"/>
+                    </a>
+                </p:panel>
+            </p:dataGrid>  
+        </h:form>
+    </ui:define>
+</ui:composition>
+

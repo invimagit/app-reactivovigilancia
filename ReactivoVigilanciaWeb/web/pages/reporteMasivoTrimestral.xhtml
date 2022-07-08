@@ -1,0 +1,1630 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="../template/mainMenuTemplateSinMenu.xhtml">
+
+    <ui:define name="content">
+        
+        
+        <p:dialog modal="true" widgetVar="statusDialog" header="Procesando registros de ReactivoVigilancia" draggable="false" closable="false" resizable="false" width="300" height="350" style="alignment-adjust:middle">
+            <br/>
+            <br/>
+            <br/>
+            <center>
+                <p:graphicImage id="animacionBusqueda" value="/resources/images/procesando.gif" alt="Procesando registros de ReactivoVigilancia" title="Procesando registros de ReactivoVigilancia"/>
+                <br/>
+                <p:clock pattern="HH:mm:ss dd.MM.yyyy" mode="server" />
+            </center>
+            <br/>
+            <br/>
+        </p:dialog>
+        
+        
+        <script language="javascript" type="text/javascript">
+            function Solo_Numerico(variable) {
+                Numer = parseInt(variable);
+                if (isNaN(Numer)) {
+                    return "";
+                }
+                return Numer;
+            }
+            
+            
+            function ValNumero(Control) {
+                Control.value = Solo_Numerico(Control.value);
+            }
+            
+            
+            function start()
+            {
+                console.log("arrancando animacion");
+                PF('statusDialog').show();
+            }
+            
+            
+            function stop()
+            {
+                PF('statusDialog').hide();
+                console.log("Deteniendo animacion");
+            }
+            
+            
+            function redireccionarMismaVentana(urlPaginaDestino)
+            {
+                console.log("Abriendo popup en la misma ventana de confirmacion");
+                setTimeout(function ()
+                {
+                    console.log("Retrasando el envio del formulario - para modificar registro");
+                }, 1500);
+
+                window.location.href = urlPaginaDestino;
+                console.log("Fin Abriendo popup en la misma ventana de confirmacion");
+                return false;
+            }
+            
+            
+            function cargar()
+            {
+                if (confirm('¿Desea realizar el cargue del archivo a la pantalla de datos (S/N)?'))
+                {
+                    start();
+                    return (true);
+                } else
+                {
+                    alert("Se canceló el cargue del archivo al Sistema");
+                    return (false);
+                }
+            }
+            
+            
+        </script>
+        
+        
+        
+        <div align="center">
+            <p:panel  id="panelTituloReporte" style="width:90%;text-align:left;border: none;">
+                <p:panelGrid styleClass="cssPanelesAcidos" style="width: 100%;">
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Reporte trimestral de incidentes asociados al uso de Reactivos de Diagnóstico In Vitro (archivo en Excel)"/>
+                        </p:column>
+                        <p:column>
+                            <a href="#" onclick="abrirAyuda('visorManualReactivo.xhtml?rutaArchivoPDF=#{beanParametrosGenerales.obtenerDireccionServidor()}ManualesReactivo/docs/InstructivoMasivo.pdf')">
+                                <p:graphicImage value="/resources/images/help.png" alt="Instructivo reporte masivo trimestral" title="Instructivo reporte masivo trimestral"/>
+                            </a>
+                        </p:column>
+                        <p:column>
+                            <a href="#" onclick="abrirAyuda('visorTutorial.xhtml?rutaVideoTutorial=#{beanParametrosGenerales.obtenerDireccionServidor()}ManualesReactivo/videos/TutCargueMasivoTrimestralRV.mp4')">
+                                <b>VideoTutorial</b>
+                                <p:graphicImage value="/resources/images/video.png" width="7%" height="3%"
+                                                alt="Videotutorial de ayuda reporte trimestral"
+                                                title="Videotutorial de ayuda reporte trimestral"/>
+                            </a>
+                        </p:column>
+                    </p:row>
+                </p:panelGrid>
+            </p:panel>
+
+            <h:form  prependId="false" enctype="multipart/form-data">
+                <p:panelGrid columns="2">
+
+                    <p:outputLabel value="Cargar un archivo:"/>
+                    <h:inputFile id="archivo_subido" value="#{fileUploadViewMasivoReactivo.file}"/>
+                    <p:outputLabel value=""/>
+                    <p:commandButton process="archivo_subido" value="Cargar Archivo" id="botonCargarArchivo" actionListener="#{fileUploadViewMasivoReactivo.subirArchivo}"
+                                     update="messages" ajax="false" onclick="return cargar()" oncomplete="stop()"/>
+
+                </p:panelGrid>
+            </h:form>
+            <h:form  onkeypress="if (event.keyCode === 13) {
+                        return false; }"   id="formularioCargue"
+                     prependId="false">
+                <p:growl id="messages" showDetail="true" autoUpdate="true"/>
+
+                <c:if test = "${fileUploadViewMasivoReactivo.operacion == 'cargueArchivo'}">
+                    <p:panel id="panelPpalRegistro" style="width:90%;text-align:left;border: none;">
+
+                        <br/>
+                        <br/>
+                        <p:dataTable emptyMessage="Sin registros encontrados" value="#{fileUploadViewMasivoReactivo.listaDatosExcel}" id="tablaGrillaMasiva"
+                                     var="o" widgetVar="50" style="width: 5500px;" editable="true">
+                            <f:facet name="header">
+                                Registros de Reporte de Cargue Trimestral Masivo
+                            </f:facet>
+                            <p:ajax event="rowEdit" listener="#{fileUploadViewMasivoReactivo.onEdit}" update="messages" />
+                            <p:ajax event="rowEditInit" listener="#{fileUploadViewMasivoReactivo.capturarDatoFila}"/>
+                            <p:ajax event="rowEditCancel" listener="#{fileUploadViewMasivoReactivo.onCancel}" update="messages" />
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="Secuencial"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.secuencial}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <h:outputText style="font-size:11px;" value="#{o.secuencial}"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="Secuencial"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="A1. Nombre de la Institución"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.nombreInstitucion}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText id="nombreInstitucionGrilla" value="#{o.nombreInstitucion}" style="width:100%" maxlength="30" required="true"
+                                                     alt="Ingrese el nombre de la Institución" title="Ingrese el nombre de la Institución"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="A1. Nombre de la Institución"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="A2. Departamento"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.departamentoInstitucion}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="departamentoCombo" value="#{fileUploadViewMasivoReactivo.departamento}"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="true">
+                                            <p:ajax listener="#{fileUploadViewMasivoReactivo.onChangeDepartamento}" update="municipioCombo"
+                                                    process="@this" partialSubmit="true"/>
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItems value="#{fileUploadViewMasivoReactivo.listaDepartamentos}"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="A2. Departamento"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="A3. Ciudad"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.ciudadInstitucion}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="municipioCombo" value="#{fileUploadViewMasivoReactivo.municipio}"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="true">
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItems value="#{fileUploadViewMasivoReactivo.listaMunicipios}"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="A3. Ciudad"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="A4. Dirección"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.direccionInstitucion}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText id="direccionInstitucionGrilla" value="#{o.direccionInstitucion}" style="width:100%" maxlength="30" required="true"
+                                                     alt="Ingrese la dirección de la Institución" title="Ingrese la dirección de la Institución"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="A4. Dirección"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="A5. NIT"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.nitInstitucion}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputMask id="nitInstitucionGrilla" value="#{o.nitInstitucion}"
+                                                     style="width:100%"
+                                                     required="true"  mask="9?99999999" maxlength="30"
+                                                     title="Ingrese A5 NIT" alt="Ingrese A5 NIT"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="A5. NIT"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="A6. Nivel de Complejidad (si aplica)"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.nivelComplejidadInstitucion}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="nivelComplejidadInstitucionGrilla" value="#{o.nivelComplejidadInstitucion}" title="Ingrese A6. Nivel de Complejidad (si aplica)"
+                                                             style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="true">
+                                                <f:selectItem itemLabel="Seleccione el Nivel de Complejidad" itemValue="0" noSelectionOption="true" />
+                                                <f:selectItem itemLabel="Alto" itemValue="1"/>
+                                                <f:selectItem itemLabel="Medio" itemValue="2"/>
+                                                <f:selectItem itemLabel="Bajo" itemValue="3"/>
+                                                <f:selectItem itemLabel="N/A" itemValue="4"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="A6. Nivel de Complejidad (si aplica)"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="A7. Naturaleza"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.naturalezaInstitucion}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="naturalezaGrilla" value="#{fileUploadViewMasivoReactivo.naturaleza}" title="Seleccione la A7. Naturaleza"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="true">
+                                            <f:selectItem itemLabel="Seleccione la Naturaleza" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItem itemLabel="Pública" itemValue="PU"/>
+                                            <f:selectItem itemLabel="Privada" itemValue="PR"/>
+                                            <f:selectItem itemLabel="Mixta" itemValue="MI"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="A7. Naturaleza"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="B1. Tipo de Identificación"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.tipIdentPaciente}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="tipoDocumentoGrilla" value="#{fileUploadViewMasivoReactivo.tipoDocumento}"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;"
+                                                         title="Ingrese B1. Tipo de Identificación"
+                                                         required="true">
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItems value="#{fileUploadViewMasivoReactivo.listaTiposDocumento}"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="B1. Tipo de Identificación"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="B2.  Identificación"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.identificacionPaciente}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputMask id="identificacionPacienteGrilla" value="#{o.identificacionPaciente}" style="width:100%"
+                                                     required="true"  mask="9?99999999" maxlength="10"
+                                                     title="Ingrese B2. Identificación" alt="Ingrese B2. Identificación"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="B2.  Identificación"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="B3.  Sexo"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.sexoPaciente}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="sexoPacienteGrilla" value="#{fileUploadViewMasivoReactivo.sexo}" title="Ingrese B3. Sexo"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="true">
+                                            <f:selectItem itemLabel="Seleccione Sexo del Reportante" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItem itemLabel="Masculino" itemValue="M"/>
+                                            <f:selectItem itemLabel="Femenino" itemValue="F"/>
+                                            <f:selectItem itemLabel="Sin dato" itemValue="N"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="B3.  Sexo"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="B4.  Edad"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.edadPaciente}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputMask id="edadPacienteGrilla" value="#{o.edadPaciente}" style="width:100%"
+                                                     required="true" mask="9?99" maxlength="3"
+                                                     title="Ingrese B3. Edad" alt="Ingrese B3. Edad"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="B4.  Edad"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="B5.  Edad en"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.edadEnPaciente}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="edadEnPacienteGrilla" value="#{fileUploadViewMasivoReactivo.edadEn}" title="Ingrese B5. Sexo"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="true">
+                                            <f:selectItem itemLabel="Seleccione la medida de la edad" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItem itemLabel="Años" itemValue="A"/>
+                                            <f:selectItem itemLabel="Meses" itemValue="M"/>
+                                            <f:selectItem itemLabel="Semanas" itemValue="S"/>
+                                            <f:selectItem itemLabel="Días" itemValue="D"/>
+                                            <f:selectItem itemLabel="Sin dato" itemValue="N"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="B5.  Edad en"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="C1.  Nombre Comercial del Reactivo de Diagnostico In Vitro"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.nombreReactivo}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText id="nombreReactivoGrilla" value="#{o.nombreReactivo}" style="width:100%"
+                                                     maxlength="100" required="true"
+                                                     alt="Ingrese el Nombre Comercial del Reactivo de Diagnostico In Vitro"
+                                                     title="Ingrese el Nombre Comercial del Reactivo de Diagnostico In Vitro"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="C1.  Nombre Comercial del Reactivo de Diagnostico In Vitro"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="C2.  Registro sanitario o permiso de comercialización"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.registroSanReactivo}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText id="registroSanReactivoGrilla" value="#{o.registroSanReactivo}" style="width:100%"
+                                                     maxlength="30" required="true"
+                                                     alt="Ingrese C2. Registro sanitario o permiso de comercialización"
+                                                     title="Ingrese C2. Registro sanitario o permiso de comercialización"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="C2.  Registro sanitario o permiso de comercialización"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="C3.  Expediente"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.expedienteReactivo}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputMask id="expedienteReactivoGrilla" value="#{o.expedienteReactivo}" style="width:100%"
+                                                     required="true" mask="9?999999999" maxlength="10"
+                                                     title="Ingrese el Expediente del Registro" alt="Ingrese el Expediente del Registro"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="C3.  Expediente"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="C4.  Código Unico del Reactivo de Diagnostico In Vitro"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.codUnicoReactivo}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputMask id="codUnicoReactivoGrilla" value="#{o.codUnicoReactivo}" style="width:100%"
+                                                     required="true"  mask="9?99999999" maxlength="10"
+                                                     alt="Ingrese C4.  Código Unico del Reactivo de Diagnostico In Vitro"
+                                                     title="Ingrese C4.  Código Unico del Reactivo de Diagnostico In Vitro"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="C4.  Código Unico del Reactivo de Diagnostico In Vitro"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="C5.  Código Tipo de Reactivo In Vitro "/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.codigoTipoDiagReactivo}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="tipoDispositivoGrilla" value="#{fileUploadViewMasivoReactivo.tipoDispositivo}"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;"
+                                                         title="Ingrese el Tipo de Dispositivo" disabled="true"
+                                                         required="false">
+                                            <f:selectItem itemLabel="Seleccione un Tipo de Dispositivo" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItems value="#{fileUploadViewMasivoReactivo.listaTipoDispositivos}"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="C5.  Código Tipo de Reactivo In Vitro"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="C6.  Lote"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.loteReactivo}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText id="loteReactivoGrilla" value="#{o.loteReactivo}" style="width:100%"
+                                                     maxlength="20" required="true"
+                                                     alt="Ingrese C6. Lote" title="Ingrese C6. Lote"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="C6.  Lote"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="C7.  Referencia"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.referenciaReactivo}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText id="referenciaReactivoGrilla" value="#{o.referenciaReactivo}" style="width:100%"
+                                                     maxlength="50" required="true"
+                                                     alt="Ingrese C7.  Referencia" title="Ingrese C7.  Referencia"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="C7.  Referencia"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="C8.  Fecha de vencimiento"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.fechaVenReactivo}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:calendar locale="es"  id  ="fechaVenReactivoGrilla" value="#{o.fechaVenReactivo}" pattern="dd/MM/yyyy HH:mm:ss"
+                                                    showOn="button" style="font-weight: bold;font-size:14px" required="true" size="50"
+                                                    alt="Seleccione la fecha de Vencimiento del Reactivo"
+                                                    title="Seleccione la fecha de Vencimiento del Reactivo"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="C8.  Fecha de vencimiento"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="C9.  Procedencia"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.procedenciaReactivo}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="procedenciaReactivoGrilla" value="#{fileUploadViewMasivoReactivo.procedenciaReactivo}"
+                                                         title="Ingreso C9.  Procedencia"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="true">
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItem itemLabel="Nacional" itemValue="N"/>
+                                            <f:selectItem itemLabel="Importado" itemValue="I"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="C9.  Procedencia"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="C10.  Requiere cadena de frío"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.requiereCadFrioReactivo}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="requiereCadFrioReactivoGrilla" value="#{fileUploadViewMasivoReactivo.requiereCadFrioReactivo}"
+                                                         title="Ingreso C9.  Procedencia"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="true">
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItem itemLabel="Sí" itemValue="S"/>
+                                            <f:selectItem itemLabel="No" itemValue="N"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="C10.  Requiere cadena de frío"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="C11.  Temperatura almacenamiento requerida"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.temperaturaReactivo}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText id="temperaturaReactivoGrilla" value="#{o.temperaturaReactivo}" style="width:100%"
+                                                     maxlength="15" required="true"
+                                                     alt="Ingrese C7.  Referencia" title="Ingrese C7.  Referencia"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="C11.  Temperatura almacenamiento requerida"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="C12.  Categoría del reactivo según el riesgo (Decreto 3770 de 2004)"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.catReactivo}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="catReactivoGrilla" value="#{fileUploadViewMasivoReactivo.catReactivo}"
+                                                         title="Ingrese C12.  Categoría del reactivo según el riesgo (Decreto 3770 de 2004)"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="true">
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItem itemLabel="Categoría I" itemValue="1"/>
+                                            <f:selectItem itemLabel="Categoría II" itemValue="2"/>
+                                            <f:selectItem itemLabel="Categoría III" itemValue="3"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="C12.  Categoría del reactivo según el riesgo (Decreto 3770 de 2004)"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="C13.  Se cumplieron con las condiciones de almacenamiento según especificaciones del fabricante"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.cumpleConAlmacena}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="cumpleConAlmacenaGrilla" value="#{fileUploadViewMasivoReactivo.cumpleConAlmacena}"
+                                                         title="Ingrese C13.  Se cumplieron con las condiciones de almacenamiento según especificaciones del fabricante"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="true">
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItem itemLabel="Sí" itemValue="S"/>
+                                            <f:selectItem itemLabel="No" itemValue="N"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="C13.  Se cumplieron con las condiciones de almacenamiento según especificaciones del fabricante"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="C14.  ¿Se realiza recepción frente a especificaciones técnicas del RDIV?"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.realizaRecepcionReactivo}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="realizaRecepcionReactivoGrilla" value="#{fileUploadViewMasivoReactivo.realizaRecepcionReactivo}"
+                                                         title="Seleccione C14.  ¿Se realiza recepción frente a especificaciones técnicas del RDIV?"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="true">
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItem itemLabel="Sí" itemValue="S"/>
+                                            <f:selectItem itemLabel="No" itemValue="N"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="C14.  ¿Se realiza recepción frente a especificaciones técnicas del RDIV?"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="C15.  ¿El producto cuenta con certificado de análisis?"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.prodCertAnalisisReactivo}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="prodCertAnalisisReactivoGrilla" value="#{fileUploadViewMasivoReactivo.prodCertAnalisisReactivo}"
+                                                         title="Seleccione C15.  ¿El producto cuenta con certificado de análisis?"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="true">
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItem itemLabel="Sí" itemValue="S"/>
+                                            <f:selectItem itemLabel="No" itemValue="N"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="C15.  ¿El producto cuenta con certificado de análisis?"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="C16.  Nombre o Razón social del Fabricante"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.nombreFabReactivo}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText id="nombreFabReactivoGrilla" value="#{o.nombreFabReactivo}" style="width:100%"
+                                                     maxlength="30" required="true"
+                                                     alt="Ingrese C16.  Nombre o Razón social del Fabricante"
+                                                     title="Ingrese C16.  Nombre o Razón social del Fabricante"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="C16.  Nombre o Razón social del Fabricante"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="C17.  Nombre o razón social del importador y/o distribuidor"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.nombreImportadorReactivo}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText id="nombreImportadorReactivoGrilla" value="#{o.nombreImportadorReactivo}" style="width:100%"
+                                                     maxlength="30" required="true"
+                                                     alt="Ingrese C17.  Nombre o razón social del importador y/o distribuidor"
+                                                     title="Ingrese C17.  Nombre o razón social del importador y/o distribuidor"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="C17.  Nombre o razón social del importador y/o distribuidor"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="C18.  Servicio o Área de funcionamiento del reactivo en el momento del efecto indeseado"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.servicioFunReactivo}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="servicioFunReactivoGrilla" value="#{fileUploadViewMasivoReactivo.servicioFunReactivo}"
+                                                         title="Ingrese C12.  Categoría del reactivo según el riesgo (Decreto 3770 de 2004)"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="true">
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItem itemLabel="Laboratorio clinico" itemValue="1"/>
+                                            <f:selectItem itemLabel="Laboratorio salud pública" itemValue="2"/>
+                                            <f:selectItem itemLabel="Servicio transfusional" itemValue="3"/>
+                                            <f:selectItem itemLabel="Banco de Sangre" itemValue="4"/>
+                                            <f:selectItem itemLabel="Banco de Tejidos" itemValue="5"/>
+                                            <f:selectItem itemLabel="Banco de Gametos" itemValue="6"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="C18.  Servicio o Área de funcionamiento del reactivo en el momento del efecto indeseado"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="D1.  Fecha del incidente dd/mm/aaaa"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.fechaIncidente}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:calendar locale="es"  id  ="fechaIncidenteGrilla" value="#{o.fechaIncidente}" pattern="dd/MM/yyyy HH:mm:ss"
+                                                    showOn="button" style="font-weight: bold;font-size:14px" required="true" size="50"
+                                                    alt="Ingrese D1.  Fecha del incidente dd/mm/aaaa"
+                                                    title="Ingrese D1.  Fecha del incidente dd/mm/aaaa"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="D1.  Fecha del incidente dd/mm/aaaa"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="D2.  Descripción del incidente"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.descripcionIncidente}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputTextarea rows="6" cols="33"
+                                                         id="descripcionIncidenteGrilla" value="#{o.descripcionIncidente}" style="width:100%"
+                                                         maxlength="1000" required="true"
+                                                         title="Ingrese D2.  Descripción del incidente"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="D2.  Descripción del incidente"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="D3.  Desenlace del incidente adverso"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.desenlaceIncidente}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="desenlaceIncidenteGrilla" value="#{fileUploadViewMasivoReactivo.desenlaceIncidente}"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;"
+                                                         title="Ingrese D3.  Desenlace del incidente adverso"
+                                                         required="true">
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItems value="#{fileUploadViewMasivoReactivo.listaDesenlaces}"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="D3.  Desenlace del incidente adverso"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="D4.  Otro ¿Cuál?"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.otroIncidente}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText id="otroIncidenteGrilla" value="#{o.otroIncidente}" style="width:100%"
+                                                     maxlength="200" required="true"
+                                                     alt="Ingrese D4.  Otro ¿Cuál?"
+                                                     title="Ingrese D4.  Otro ¿Cuál?"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="D4.  Otro ¿Cuál?"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="E1.  ¿La institución tiene implementado un programa de gestión de riesgos?"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.tieneProgGestion}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="tieneProgGestionGrilla" value="#{fileUploadViewMasivoReactivo.tieneProgGestion}"
+                                                         title="Seleccione E1.  ¿La institución tiene implementado un programa de gestión de riesgos?"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="true">
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItem itemLabel="Sí" itemValue="S"/>
+                                            <f:selectItem itemLabel="No" itemValue="N"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="E1.  ¿La institución tiene implementado un programa de gestión de riesgos?"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="E2.  ¿Se realizó algún tipo de análisis del Incidente?"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.realizoAnalisisGestion}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="realizoAnalisisGestionGrilla" value="#{fileUploadViewMasivoReactivo.realizoAnalisisGestion}"
+                                                         title="Seleccione E1.  ¿La institución tiene implementado un programa de gestión de riesgos?"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="true">
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItem itemLabel="Sí" itemValue="S"/>
+                                            <f:selectItem itemLabel="No" itemValue="N"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="E2.  ¿Se realizó algún tipo de análisis del Incidente?"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="E3.  ¿Qué herramienta utilizó para el análisis del evento adverso o incidente?"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.herramientaAnalisisGestion}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="herramientaAnalisisGestionGrilla" value="#{fileUploadViewMasivoReactivo.herramientaAnalisisGestion}"
+                                                         title="Seleccione E3.  ¿Qué herramienta utilizó para el análisis del evento adverso o incidente?"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="true">
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItem itemLabel="Protocolo de Londres" itemValue="1"/>
+                                            <f:selectItem itemLabel="AMFE" itemValue="2"/>
+                                            <f:selectItem itemLabel="Espina de pescado" itemValue="3"/>
+                                            <f:selectItem itemLabel="Otro/cual" itemValue="4"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="E3.  ¿Qué herramienta utilizó para el análisis del evento adverso o incidente?"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="E4.  Otro ¿Cua?"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.otroAnalisisGestion}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText id="otroAnalisisGestionGrilla" value="#{o.otroAnalisisGestion}" style="width:100%"
+                                                     maxlength="50" required="true"  alt="Ingrese E4.  Otro ¿Cuál?"
+                                                     title="Ingrese E4.  Otro ¿Cuál?"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="E4.  Otro ¿Cual?"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="E5.  ¿Se detectó la causa que generó el efecto indeseado?"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.causaEfectoAnalisisGestion}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="causaEfectoAnalisisGestionGrilla" value="#{fileUploadViewMasivoReactivo.causaEfectoAnalisisGestion}"
+                                                         title="Seleccione E5.  ¿Se detectó la causa que generó el efecto indeseado?"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="true">
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItem itemLabel="Sí" itemValue="S"/>
+                                            <f:selectItem itemLabel="No" itemValue="N"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="E5.  ¿Se detectó la causa que generó el efecto indeseado?"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="E6.  Causa probable del efecto indeseado"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.causaProbableEfectoGestion}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="causaProbableEfectoGestionGrilla" value="#{fileUploadViewMasivoReactivo.causaProbableEfectoGestion}"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;"
+                                                         title="Ingrese E6.  Causa probable del efecto indeseado"
+                                                         required="true">
+                                            <p:ajax listener="#{fileUploadViewMasivoReactivo.onChangeCausaProbable}" process="@this" partialSubmit="true"
+                                                    update="descripcionCausaEfectoGestionGrilla,codigoCausaEfectoGestionGrilla"/>
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItems value="#{fileUploadViewMasivoReactivo.listaCausasProbables}"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="E6.  Causa probable del efecto indeseado"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="E7.  Descripción de la Causa"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.descripcionCausaEfectoGestion}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="descripcionCausaEfectoGestionGrilla" value="#{fileUploadViewMasivoReactivo.descripcionCausaEfectoGestion}"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;"
+                                                         title="Ingrese E7.  Descripción de la Causa" disabled="true"
+                                                         required="true">
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItems value="#{fileUploadViewMasivoReactivo.listaDescripcionesCausa}"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="E7.  Descripción de la Causa"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="E8.  Codigo de la Causa"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.codigoCausaEfectoGestion}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="codigoCausaEfectoGestionGrilla" value="#{fileUploadViewMasivoReactivo.codigoCausaEfectoGestion}"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;"
+                                                         title="Ingrese E8.  Codigo de la Causa" disabled="true"
+                                                         required="true">
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItems value="#{fileUploadViewMasivoReactivo.listaCausasProbablesCodigos}"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="E8.  Codigo de la Causa"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="E9.  ¿Inició acciones de mejoramiento (preventivas/correctivas)?"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.inicioAccionesEfectoGestion}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="inicioAccionesEfectoGestionGrilla" value="#{fileUploadViewMasivoReactivo.inicioAccionesEfectoGestion}"
+                                                         title="Seleccione E9.  ¿Inició acciones de mejoramiento (preventivas/correctivas)?"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="true">
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItem itemLabel="Sí" itemValue="S"/>
+                                            <f:selectItem itemLabel="No" itemValue="N"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="E9.  ¿Inició acciones de mejoramiento (preventivas/correctivas)?"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="E10.  Describa las acciones emprendidas"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.accionesGestion}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputTextarea rows="6" cols="33"
+                                                         id="accionesGestionGrilla" value="#{o.accionesGestion}" style="width:100%"
+                                                         maxlength="1000" required="true"
+                                                         title="E10.  Describa las acciones emprendidas"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="E10.  Describa las acciones emprendidas"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="E11.  Reportó al Importador/Distribuidor/fabricante"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.reportoDistribGestion}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="reportoDistribGestionGrilla" value="#{fileUploadViewMasivoReactivo.reportoDistribGestion}"
+                                                         title="Seleccione E9.  ¿Inició acciones de mejoramiento (preventivas/correctivas)?"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="true">
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItem itemLabel="Sí" itemValue="S"/>
+                                            <f:selectItem itemLabel="No" itemValue="N"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="E11.  Reportó al Importador/Distribuidor/fabricante"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="E12.  Fecha Reporte al Importador/Distribuidor/fabricante"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.fechaReporteImportadorGestion}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:calendar locale="es"  id  ="fechaReporteImportadorGestionGrilla" value="#{o.fechaReporteImportadorGestion}" pattern="dd/MM/yyyy HH:mm:ss"
+                                                    showOn="button" style="font-weight: bold;font-size:14px" required="true" size="50"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="E12.  Fecha Reporte al Importador/Distribuidor/fabricante"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="E13.  Fecha de envió del Reactivo de Diagnostico in vitro a Distribuidor/Importador/fabricante"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.fechaEnvioDistribuidorGestion}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:calendar locale="es"  id  ="fechaEnvioDistribuidorGestionGrilla" value="#{o.fechaEnvioDistribuidorGestion}" pattern="dd/MM/yyyy HH:mm:ss"
+                                                    showOn="button" style="font-weight: bold;font-size:14px" required="true" size="50"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="E13.  Fecha de envió del Reactivo de Diagnostico in vitro a Distribuidor/Importador/fabricante"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="F1.  Nombre Reportante"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.nombreReportante}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText id="nombreReportanteGrilla" value="#{o.nombreReportante}" style="width:100%"
+                                                     maxlength="50" required="true"
+                                                     alt="Ingrese F1.Nombre del Reportante"
+                                                     title="Ingrese F1.Nombre del Reportante"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="F1.  Nombre Reportante"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="F2.  Profesión Reportante"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.profesionReportante}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="profesionReportanteGrilla" value="#{fileUploadViewMasivoReactivo.profesionReportante}"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;"
+                                                         title="Ingrese F2.Profesión"
+                                                         required="true">
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItems value="#{fileUploadViewMasivoReactivo.listaCargos}"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="F2.  Profesión Reportante"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="F3.  Organización Reportante"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.organizacionReportante}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText id="organizacionReportanteGrilla" value="#{o.organizacionReportante}" style="width:100%"
+                                                     maxlength="30" required="true"  alt="Ingrese F3. Organización"
+                                                     title="Ingrese F3. Organización"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="F3.  Organización Reportante"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="F4.  Dirección Reportante"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.direccionReportante}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText id="direccionReportanteGrilla" value="#{o.direccionReportante}" style="width:100%"
+                                                     maxlength="50" required="true"  alt="Ingrese F3. Organización"
+                                                     title="Ingrese F3. Organización"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="F4.  Dirección Reportante"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="F5.  Teléfono Reportante"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.telefonoReportante}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputMask id="telefonoReportanteGrilla" value="#{o.telefonoReportante}" style="width:100%"
+                                                     required="true"  mask="9?9999999" maxlength="9"
+                                                     title="IIngrese F5.Teléfono" alt="Ingrese F5.Teléfono"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="F5.  Teléfono Reportante"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="F6.  Departamento Reportante"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.departamentoReportante}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="departamentoReporteCombo" required="true" value="#{fileUploadViewMasivoReactivo.departamentoReporte}"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;">
+                                            <p:ajax listener="#{fileUploadViewMasivoReactivo.onChangeDepartamentoReporte}" update="municipioReporteCombo"
+                                                    process="@this" partialSubmit="true"/>
+                                            <f:selectItems value="#{fileUploadViewMasivoReactivo.listaDepartamentosReporte}"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="F6.  Departamento Reportante"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="F7.  Ciudad Reportante"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.ciudadReportante}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="municipioReporteCombo" required="true" value="#{fileUploadViewMasivoReactivo.municipioReporte}"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;">
+                                            <f:selectItems value="#{fileUploadViewMasivoReactivo.listaMunicipiosReporte}"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="F7.  Ciudad Reportante"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="F8.  Correo electrónico Institucional Reportante"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.correoReportante}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText id="correoReportanteGrilla" required="true" label="email" size="40"
+                                                     requiredMessage="Ingrese una dirección de correo electrónico."
+                                                     validatorMessage="Formato de Email inválido"
+                                                     value="#{o.correoReportante}">
+                                            <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                                        </p:inputText>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="F8.  Correo electrónico Institucional Reportante"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="F9.  Fecha de notificación de IPS dd/mm/aaaa Reportante"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.fechaNotIPSReportante}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:calendar locale="es"  id  ="fechaNotIPSReportanteGrilla" value="#{o.fechaNotIPSReportante}" pattern="dd/MM/yyyy HH:mm:ss"
+                                                    showOn="button" style="font-weight: bold;font-size:14px" required="true" size="50"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="F9.  Fecha de notificación de IPS dd/mm/aaaa Reportante"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="F10. Autoriza la divulgación de la información y origen del reporte"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.autorizaDivulgaReportante}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="autorizaDivulgaReportanteGrilla" value="#{fileUploadViewMasivoReactivo.autorizaDivulgaReportante}"
+                                                         title="Ingrese F10. Autoriza la divulgación de la información y origen del reporte al fabricante o importador"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="true">
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItem itemLabel="Sí" itemValue="S"/>
+                                            <f:selectItem itemLabel="No" itemValue="N"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="F10. Autoriza la divulgación de la información y origen del reporte"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="G1.  Tipo de Reportante"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.tipoReportanteInfoReactivo}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="tipoReportanteInfoReactivoGrilla" value="#{fileUploadViewMasivoReactivo.tipoReportanteInfoReactivo}"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;"
+                                                         title="Ingrese el Tipo de Reportante"
+                                                         required="true">
+                                            <f:selectItems value="#{fileUploadViewMasivoReactivo.listaTipoReportantes}"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="G1.  Tipo de Reportante"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="G2.  Estado del Reporte"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.estadoReporteInfoReactivo}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="estadoReporteInfoReactivoGrilla" value="#{fileUploadViewMasivoReactivo.estadoReporteInfoReactivo}"
+                                                         title="G2.  Estado del Reporte"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="true">
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItem itemLabel="S" itemValue="S"/>
+                                            <f:selectItem itemLabel="C" itemValue="C"/>
+                                            <f:selectItem itemLabel="A" itemValue="A"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="G2.  Estado del Reporte"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="H1.  Fecha Gestión Ente Territorial"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.fechaGET}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:calendar locale="es"  id  ="fechaGETGrilla" value="#{o.fechaGET}" pattern="dd/MM/yyyy HH:mm:ss"
+                                                    showOn="button" style="font-weight: bold;font-size:14px" required="false" size="50"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="H1.  Fecha Gestión Ente Territorial"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="H2.  Gestión Ente Territorial"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.gestionET}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputTextarea rows="6" cols="33"
+                                                         id="gestionETGrilla" value="#{o.gestionET}" style="width:100%"
+                                                         maxlength="100" required="false"
+                                                         title="H2.  Gestión Ente Territorial"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="H2.  Gestión Ente Territorial"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="H3.  Estado Ente Territorial"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.estadoGET}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu id="estadoGETGrilla" value="#{fileUploadViewMasivoReactivo.estadoGET}" title="H3.  Estado Ente Territorial"
+                                                         style="width :66%;font-family:Arial, Helvetica, sans-serif; font-weight:normal; font-size:0.95em;" required="false">
+                                            <f:selectItem itemLabel="Seleccione una opción" itemValue="0" noSelectionOption="true" />
+                                            <f:selectItem itemLabel="S" itemValue="S"/>
+                                            <f:selectItem itemLabel="C" itemValue="C"/>
+                                            <f:selectItem itemLabel="A" itemValue="A"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="H3.  Estado Ente Territorial"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="I1.  Fecha Gestión Invima"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.fechaGInvima}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:calendar locale="es"  id  ="fechaGInvimaGrilla" value="#{o.fechaGInvima}" pattern="dd/MM/yyyy HH:mm:ss"
+                                                    showOn="button" style="font-weight: bold;font-size:14px" required="false" size="50"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="I1.  Fecha Gestión Invima"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText style="font-size:11px;" value="I2.  Observaciones Gestión Invima"/>
+                                </f:facet>
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText style="font-size:11px;" value="#{o.observacionesGInvima}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputTextarea rows="6" cols="33"
+                                                         id="observacionesGInvimaGrilla" value="#{o.observacionesGInvima}" style="width:100%"
+                                                         maxlength="100" required="false"
+                                                         title="I2.  Observaciones Gestión Invima"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                                <f:facet name="footer">
+                                    <h:outputText style="font-size:11px;" value="I2.  Observaciones Gestión Invima"/>
+                                </f:facet>
+                            </p:column>
+
+                            <p:column headerText="Opciones" style="width:50px">
+                                <p:rowEditor />
+                            </p:column>
+                        </p:dataTable>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <center>
+                            <p:panel id="panelBotones" style="width:90%;text-align:left;border: none;">
+                                <!-- ***************************************************************************** -->
+                                <!-- ***************************************************************************** -->
+                                <p:commandButton value="Validar Plantilla Trimestral" id="botonValidar" actionListener="#{fileUploadViewMasivoReactivo.validarArchivo}"
+                                                 onstart="start()" oncomplete="stop()" update="botonCargar,messages">
+                                    <p:confirm header="Confirmación del Proceso de Validación" message="¿Desea validar el contenido del archivo de Reporte Masivo Trimestral con Evento? (S/N)" icon="ui-icon-alert" />
+                                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                        <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                    </p:confirmDialog>
+                                </p:commandButton>
+                                <!-- ***************************************************************************** -->
+                                <!-- ***************************************************************************** -->
+                                <p:commandButton value="Cargar Reportes Trimestrales con Evento" id="botonCargar" actionListener="#{fileUploadViewMasivoReactivo.cargarDatosValidados}"
+                                                 disabled="#{!(fileUploadViewMasivoReactivo.habilitaGuardado)}"
+                                                 onstart="start()" oncomplete="stop()">
+                                    <p:confirm header="Confirmación del Cargue de Registros al Sistema de ReactivoVigilancia" message="¿Desea realizar el cargue del contenido del archivo de Reporte Masivo Trimestral con Evento? (S/N)" icon="ui-icon-alert" />
+                                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                        <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                    </p:confirmDialog>
+                                </p:commandButton>
+                                <!-- ***************************************************************************** -->
+                                <!-- ***************************************************************************** -->
+                                <p:commandButton value="Limpiar contenido del Archivo" id="botonLimpiar" actionListener="#{fileUploadViewMasivoReactivo.limpiarArchivo}"
+                                                 onstart="start()" oncomplete="stop()" update="messages">
+                                    <p:confirm header="Confirmación de borrado de los datos de la Pantalla de Cargue" message="¿Desea limpiar la grilla de edición del archivo de Reporte Masivo Trimestral con Evento? (S/N)" icon="ui-icon-alert" />
+                                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                        <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                    </p:confirmDialog>
+                                </p:commandButton>
+                                <!-- ***************************************************************************** -->
+                                <!-- ***************************************************************************** -->
+                                <!-- ***************************************************************************** -->
+                                <!-- ***************************************************************************** -->
+                            </p:panel>
+                            <br/>
+                            <br/>
+                            <p:outputLabel value="VALIDACIONES" style="font-weight: bold;"/>
+                            <p:panel id="panelValidaciones" style="width:90%;text-align:left;border: none;">
+                                <p:dataTable emptyMessage="Sin registros encontrados" id="datosReporte" var="filaReporte"
+                                             value="#{fileUploadViewMasivoReactivo.listadoValidacionesTrimestral}" style="width: 1150px;"
+                                             paginator="true" rows="10" sortMode="multiple"  styleClass="estilo_tabla" resizableColumns="true"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                             rowsPerPageTemplate="10,20,30,40,50,60,70,80,90,100">
+                                    <f:facet name="header">
+                                        Listado General de Validaciones del Archivo de Cargue
+                                    </f:facet>
+                                    <p:column headerText="CODIGO ERROR" styleClass="estilo_encabezadotablaes">
+                                        <h:outputText value="#{filaReporte.id_error}" id="id_errorT" styleClass="estilo_tablaresumen" style="width:5px;"/>
+                                    </p:column>
+                                    <p:column headerText="TIPO DE ERROR" styleClass="estilo_encabezadotablaes">
+                                        <h:outputText value="#{filaReporte.tipo_error}" id="tipo_errorT" styleClass="estilo_tablaresumen"  style="width:50px;"/>
+                                    </p:column>
+                                    <p:column headerText="DESCRIPCIÓN DETALLADA" styleClass="estilo_encabezadotablaes">
+                                        <h:outputText value="#{filaReporte.descripcion}" id="descripcionT" styleClass="estilo_tablaresumen" style="width:300px;"/>
+                                    </p:column>
+                                    <p:column headerText="LÍNEA" styleClass="estilo_encabezadotablaes">
+                                        <h:outputText value="#{filaReporte.linea}" id="lineaT" styleClass="estilo_tablaresumen" style="width:20px;"/>
+                                    </p:column>
+                                    <p:column headerText="CAMPO DEL ARCHIVO" styleClass="estilo_encabezadotablaes">
+                                        <h:outputText value="#{filaReporte.campo}" id="campoT" styleClass="estilo_tablaresumen" style="width:40px;"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:panel>
+                            <p:separator/>
+                            <p:panel id="panelExportacion" header="Exporte los resultados a los siguientes formatos" style="width:100%">
+                                <center>
+                                    <h:commandLink>
+                                        <p:graphicImage value="resources/images/excel.png" style="border:none;" id="expExcel"/>
+                                        <p:dataExporter type="xls" target="datosReporte" fileName="MatrizValidaciones" pageOnly="false"/>
+                                    </h:commandLink>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <h:commandLink>
+                                        <p:graphicImage value="resources/images/csv.png" style="border:none;" id="expCSV"/>
+                                        <p:dataExporter type="csv" target="datosReporte" fileName="MatrizValidaciones" pageOnly="false" />
+                                    </h:commandLink>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <h:commandLink>
+                                        <p:graphicImage value="resources/images/xml.png" style="border:none;" id="expXML"/>
+                                        <p:dataExporter type="xml" target="datosReporte" fileName="MatrizValidaciones" pageOnly="false" />
+                                    </h:commandLink>
+                                </center>
+                            </p:panel>
+                        </center>
+
+                    </p:panel>
+                </c:if>
+
+                <center>
+                    <p:commandButton value="Cerrar el Reporte de Cargue Masivo Trimestral con Evento" id="botonCerrarCargue"
+                                     actionListener="#{fileUploadViewMasivoReactivo.resetearProcesoCargue}" oncomplete="self.close()"/>
+                </center>
+            </h:form>
+
+        </div>
+    </ui:define>
+
+</ui:composition>
